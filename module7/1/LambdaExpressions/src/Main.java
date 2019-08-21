@@ -14,11 +14,15 @@ public class Main
     {
         ArrayList<Employee> staff = loadStaffFromFile();
 
-        Collections.sort(staff, (o1, o2) -> o1.getSalary().compareTo(o2.getSalary()));
-        Collections.sort(staff, (o1, o2) -> {
+        staff.sort((o1, o2) -> o1.getSalary().compareTo(o2.getSalary()));
+        staff.sort((o1, o2) -> {
             int compareSalary = o1.getSalary().compareTo(o2.getSalary());
-            if (compareSalary == 0) {
-                return o1.getName().compareTo(o2.getName());
+            int compareName = o1.getName().compareTo(o2.getName());
+            if ((compareSalary == 0) && (compareName != 0)) {
+                return compareName;
+            }
+            if ((compareSalary == 0) && (compareName == 0)) {
+                return 0;
             }
             return -1;
         });
