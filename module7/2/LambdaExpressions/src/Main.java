@@ -2,6 +2,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -15,10 +17,14 @@ public class Main
         ArrayList<Employee> staff = loadStaffFromFile();
 
         // -------------------------------
-        staff.stream().filter(e -> e.getWorkStart().toString().contains("2017"))
+        staff.stream().filter(e -> toLocalDate(e.getWorkStart()).getYear() == 2017)
                 .max(Comparator.comparing(Employee::getSalary))
                 .ifPresent(System.out::println);
 
+    }
+
+    private static LocalDate toLocalDate(Date convert) {
+        return convert.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
     private static ArrayList<Employee> loadStaffFromFile()
