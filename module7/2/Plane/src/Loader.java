@@ -1,39 +1,24 @@
-import com.skillbox.airport.Aircraft;
 import com.skillbox.airport.Airport;
-import com.skillbox.airport.Flight;
-import com.skillbox.airport.Terminal;
 
-import java.sql.Time;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.temporal.ChronoField;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class Loader {
-    private final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-    private final static long TWO_HOURS = 10_800_000;
-    static Date d;
+    private static final long TWO_HOURS_MS = 2 * 60 * 60 * 1000;
 
     public static void main(String[] args) {
-
         Airport airport = Airport.getInstance();
+        Date current = new Date();
 
-        try {
-            d = dateFormat.parse(LocalDate.now().toString() + " " + LocalTime.now().toString());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        System.out.println("Current date: " + current);
+        System.out.println("----------");
 
         airport.getTerminals().stream()
-                .forEach(terminal -> terminal.getFlights().stream()
-                        .forEach(flight -> {
-                            if (flight.getDate().getTime() - d.getTime() <= TWO_HOURS) {
-                                System.out.println(flight.getDate() + " - " + flight.getAircraft().toString());
-                            }
-                        }));
-
+                .flatMap(terminal -> terminal.getFlights().stream())
+                .forEach(flight -> {
+                    if ((flight.getDate().getTime() - current.getTime() <= TWO_HOURS_MS)
+                            && (flight.getDate().getTime() - current.getTime() > 0)) {
+                        System.out.println(flight.getDate() + " - " + flight.getAircraft());
+                    }
+                });
     }
 }
