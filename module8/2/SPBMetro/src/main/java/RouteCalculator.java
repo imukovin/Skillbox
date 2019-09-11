@@ -25,7 +25,7 @@ public class RouteCalculator
         }
 
         route = getRouteWithOneConnection(from, to);
-        if(route != null) {
+        if(route.size() != 0) {
             return route;
         }
 
