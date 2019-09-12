@@ -1,0 +1,5 @@
+2019-09-12 13:59:08.897 [main] ERROR ERRLOG - Catching
+java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 3
+	at Main.main(Main.java:32) [classes/:?]
+2019-09-12 13:59:20.768 [main] INFO   - uncorrectStation: {}sjlkfjldksf
+2019-09-12 13:59:27.695 [main] INFO   - correctStation: Академическая

@@ -14,25 +14,24 @@ import java.util.Scanner;
 
 public class Main
 {
+    private static final Logger ERROR_LOG = LogManager.getLogger("ERRLOG");
+    private static final Logger LOGGER = LogManager.getRootLogger();
+
+
     private static String dataFile = "src/main/resources/map.json";
     private static Scanner scanner;
-    private static Logger logger1, logger2, logger3;
 
     private static StationIndex stationIndex;
 
     public static void main(String[] args)
     {
-        logger1 = LogManager.getLogger("correctStation");
-        logger2 = LogManager.getLogger("uncorrectStation");
-        logger3 = LogManager.getRootLogger();
-
         RouteCalculator calculator = getRouteCalculator();
 
         int[] a = {1, 2, 3};
         try {
             int b = a[4];
         }catch (Exception e) {
-            logger3.error(e.toString());
+            ERROR_LOG.catching(e);
         }
 
         System.out.println("Программа расчёта маршрутов метрополитена Санкт-Петербурга\n");
@@ -85,10 +84,10 @@ public class Main
             String line = scanner.nextLine().trim();
             Station station = stationIndex.getStation(line);
             if(station != null) {
-                logger1.info(line);
+                LOGGER.info("correctStation: {}", line);
                 return station;
             }
-            logger2.info(line);
+            LOGGER.info("uncorrectStation: {}" + line);
             System.out.println("Станция не найдена :(");
         }
     }
