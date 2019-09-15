@@ -1,6 +1,8 @@
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Loader {
@@ -15,10 +17,10 @@ public class Loader {
         moveFiles(folderFrom);
     }
 
-    public static File getPath(String message) {
+    private static File getPath(String message) {
         File f;
 
-        for (;;) {
+        for (; ; ) {
             System.out.println(message);
             String path = in.next();
 
@@ -33,20 +35,23 @@ public class Loader {
         return f;
     }
 
-    public static void moveFiles(File from) throws IOException {
+    private static void moveFiles(File from) throws IOException {
         File[] subFiles = from.listFiles();
+
+        if (subFiles == null) {
+            System.out.println("Папка копирования пуста!");
+            return;
+        }
+
         for (File file : subFiles) {
-            String s = file.getPath()
-                    .replaceAll("\\\\", "\\/")
-                    .replaceAll(
-                            folderFrom.getPath().replaceAll("\\\\", "\\/"),
-                            folderTo.getPath().replaceAll("\\\\", "\\/"));
+            Path oldPath = Paths.get(file.getPath()).normalize();
+            Path newPath = Paths.get(folderTo.getPath()).resolve(Paths.get(folderFrom.getPath()).relativize(oldPath));
 
             if (file.isFile()) {
-                File f = new File(s);
+                File f = new File(newPath.toString());
                 Files.copy(file.toPath(), f.toPath());
             } else {
-                new File(s).mkdir();
+                boolean isCreated = new File(newPath.toString()).mkdir();
                 moveFiles(file);
             }
         }
