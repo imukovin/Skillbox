@@ -11,63 +11,53 @@ public class Loader {
     private static double totalIncome = 0;
     private static double totalOutcome = 0;
 
-    private static ArrayList<String> visitedCompany = new ArrayList<>();
+    private static ArrayList<Company> company = new ArrayList<>();
 
     public static void main(String[] args) {
         try {
             List<String> lines = Files.readAllLines(Paths.get("res/movementList.csv"));
-            lines.remove(0);
 
-            lines.stream().forEach(str -> {
-                String company = str.split(",")[POS_OPERATION_DISCRIPTION]
-                        .replaceAll("[\\d+.]", "")
-                        .replaceAll("[\\s]{2,}", " ")
-                        .replaceAll("(.UR)(.*)(MCC)", "")
-                        .replaceAll("(USD)(.*)(MCC)", "")
-                        .replaceAll("/", "\\\\")
-                        .replaceAll("(.?\\\\)(.*)(\\\\)", "")
-                        .replaceAll("CARDCARD", "")
-                        .trim();
+            for (int i = 1; i < lines.size(); i++) {
+                company.add(parseReadLine(lines.get(i)));
+            }
 
-                Double income = .0;
-                Double outcome = .0;
+            //company.forEach(company1 -> company1.print());
 
-                if (!visitedCompany.contains(company)) {
-                    visitedCompany.add(company);
-                    income = lines.stream()
-                            .filter(s -> s.contains(company))
-                            .mapToDouble(s1 -> {
-                                String[] fragment = s1.split(",");
-                                if (fragment.length != 8) {
-                                    String come = s1.split("\"")[1].replace(",", ".");
-                                    return Double.parseDouble(come);
-                                } else {
-                                    return Double.parseDouble(s1.split(",")[POS_INCOME]);
-                                }
-                            }).sum();
-                    outcome = lines.stream()
-                            .filter(s -> s.contains(company))
-                            .mapToDouble(s1 -> {
-                                String[] fragment = s1.split(",");
-                                if (fragment.length != 8) {
-                                    String come = fragment[fragment.length - 2].replace("\"", "") + "."
-                                            + fragment[fragment.length - 1].replace("\"", "");
-                                    return Double.parseDouble(come);
-                                } else {
-                                    return Double.parseDouble(s1.split(",")[POS_OUTCOME]);
-                                }
-                            }).sum();
+            //company.stream().
 
-                    totalIncome += income;
-                    totalOutcome += outcome;
-                    System.out.println(company + ": " + income + " " + outcome);
-                }
-            });
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         System.out.println("Общий приход: " + totalIncome);
         System.out.println("Общий расход: " + totalOutcome);
+    }
+
+    private static Company parseReadLine(String line) {
+        String[] fragments = line.split(",");
+        String companyName = fragments[POS_OPERATION_DISCRIPTION]
+                .replaceAll("[\\d+.]", "")
+                .replaceAll("[\\s]{2,}", " ")
+                .replaceAll("(.UR)(.*)(MCC)", "")
+                .replaceAll("(USD)(.*)(MCC)", "")
+                .replaceAll("/", "\\\\")
+                .replaceAll("(.?\\\\)(.*)(\\\\)", "")
+                .replaceAll("CARDCARD", "")
+                .trim();
+
+        String income = fragments[POS_INCOME];
+        String outcome = fragments[POS_OUTCOME];
+
+        if (income.contains("\"")) {
+            income = income.replace("\"", "") + "." + fragments[POS_INCOME + 1].replace("\"", "");
+            if (fragments[POS_INCOME + 2].contains("\"")) {
+                outcome = fragments[POS_INCOME + 2].replace("\"", "") + "." + fragments[POS_INCOME + 3].replace("\"", "");
+            }
+        }
+        if ((!income.contains("\"")) && (fragments[POS_OUTCOME].contains("\""))) {
+            outcome = fragments[POS_OUTCOME].replace("\"", "") + "." + fragments[POS_OUTCOME + 1].replace("\"", "");
+        }
+
+        return new Company(companyName, income, outcome);
     }
 }
