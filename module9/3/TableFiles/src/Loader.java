@@ -2,6 +2,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Loader {
     private final static int POS_OPERATION_DISCRIPTION = 5;
@@ -20,11 +21,18 @@ public class Loader {
             for (int i = 1; i < lines.size(); i++) {
                 company.add(parseReadLine(lines.get(i)));
             }
-
             //company.forEach(company1 -> company1.print());
 
-            //company.stream().
+            company.stream().collect(Collectors.groupingBy(Company::getName)).forEach((s, companies) -> {
+                System.out.print(s + ": ");
+                double income = companies.stream().mapToDouble(company1 -> Double.parseDouble(company1.getIncome())).sum();
+                double outcome = companies.stream().mapToDouble(company1 -> Double.parseDouble(company1.getOutcome())).sum();
 
+                totalIncome += income;
+                totalOutcome += outcome;
+
+                System.out.println(income + " " + outcome);
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }

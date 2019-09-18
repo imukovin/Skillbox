@@ -12,4 +12,16 @@ public class Company {
     public void print() {
         System.out.println(name + " " + income + " " + outcome);
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getIncome() {
+        return income;
+    }
+
+    public String getOutcome() {
+        return outcome;
+    }
 }
