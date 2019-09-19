@@ -8,6 +8,7 @@ public class Loader {
     private final static int POS_OPERATION_DISCRIPTION = 5;
     private final static int POS_INCOME = 6;
     private final static int POS_OUTCOME = 7;
+    private final static double EURO_TO_DOLLAR = 1.11;
 
     private static double totalIncome = 0;
     private static double totalOutcome = 0;
@@ -23,16 +24,21 @@ public class Loader {
             }
             //company.forEach(company1 -> company1.print());
 
-            company.stream().collect(Collectors.groupingBy(Company::getName)).forEach((s, companies) -> {
-                System.out.print(s + ": ");
-                double income = companies.stream().mapToDouble(company1 -> Double.parseDouble(company1.getIncome())).sum();
-                double outcome = companies.stream().mapToDouble(company1 -> Double.parseDouble(company1.getOutcome())).sum();
+            company.stream().collect(
+                    Collectors.groupingBy(Company::getName),
+                    Collectors.mapping(Company::getIncome, Collectors.reducing(Summary::merge()))
 
-                totalIncome += income;
-                totalOutcome += outcome;
 
-                System.out.println(income + " " + outcome);
-            });
+//            company.stream().collect(Collectors.groupingBy(Company::getName)).forEach((s, companies) -> {
+//                System.out.print(s + ": ");
+//                double income = companies.stream().mapToDouble(company1 -> Double.parseDouble(company1.getIncome())).sum();
+//                double outcome = companies.stream().mapToDouble(company1 -> Double.parseDouble(company1.getOutcome())).sum();
+//
+//                totalIncome += income;
+//                totalOutcome += outcome;
+//
+//                System.out.println(income + " " + outcome);
+//            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -64,6 +70,11 @@ public class Loader {
         }
         if ((!income.contains("\"")) && (fragments[POS_OUTCOME].contains("\""))) {
             outcome = fragments[POS_OUTCOME].replace("\"", "") + "." + fragments[POS_OUTCOME + 1].replace("\"", "");
+        }
+
+        if (fragments[POS_OPERATION_DISCRIPTION].contains("EUR")) {
+            income = Double.toString(Double.parseDouble(income) * EURO_TO_DOLLAR);
+            outcome = Double.toString(Double.parseDouble(outcome) * EURO_TO_DOLLAR);
         }
 
         return new Company(companyName, income, outcome);
