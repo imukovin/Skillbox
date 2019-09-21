@@ -1,7 +1,11 @@
+import com.sun.source.doctree.SummaryTree;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 public class Loader {
@@ -22,23 +26,15 @@ public class Loader {
             for (int i = 1; i < lines.size(); i++) {
                 company.add(parseReadLine(lines.get(i)));
             }
-            //company.forEach(company1 -> company1.print());
 
-            company.stream().collect(
-                    Collectors.groupingBy(Company::getName),
-                    Collectors.mapping(Company::getIncome, Collectors.reducing(Summary::merge()))
-
-
-//            company.stream().collect(Collectors.groupingBy(Company::getName)).forEach((s, companies) -> {
-//                System.out.print(s + ": ");
-//                double income = companies.stream().mapToDouble(company1 -> Double.parseDouble(company1.getIncome())).sum();
-//                double outcome = companies.stream().mapToDouble(company1 -> Double.parseDouble(company1.getOutcome())).sum();
-//
-//                totalIncome += income;
-//                totalOutcome += outcome;
-//
-//                System.out.println(income + " " + outcome);
-//            });
+            company.stream().collect(Collectors.groupingBy(Company::getName,
+                    Collectors.mapping(Summary::fromCompany,
+                            Collectors.reducing(new Summary(.0, .0), Summary::merge))))
+                    .forEach((s, sum) -> {
+                        System.out.println(s + " " + sum.income + " " + sum.outcome);
+                        totalOutcome += sum.outcome;
+                        totalIncome += sum.income;
+                    });
         } catch (Exception e) {
             e.printStackTrace();
         }
