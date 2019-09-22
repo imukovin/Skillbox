@@ -17,6 +17,7 @@ public class Loader {
 
     private static ArrayList<Station> stations = new ArrayList<>();
     private static Map<String, String> lines = new TreeMap<>();
+    private static ArrayList<String> connections = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         Document doc = Jsoup.connect(URL).maxBodySize(0).get();
@@ -29,15 +30,12 @@ public class Loader {
         parseStationsFromWikipedia(doc, NUM_ON_PAGE + 2);
 
         createJsonFile();
-
-//        for (Station s : stations) {
-//            s.print();
-//        }
+        
         lines.forEach((k, v) -> System.out.println(k + " - " + v));
 
         System.out.println("\n\n---------Read Json");
         try {
-            System.out.println(new ReadJson().readJ());
+            System.out.println(ReadJson.readJ("outFile/MapMsc.json"));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -64,18 +62,42 @@ public class Loader {
                     nameOfStation = cols.get(1).text();
                 }
 
-                String connections = cols.get(3).select("span").text().replaceAll("\\s+", " ");
-                connections = delZeroInFirstPosition(connections.split(" "));
+                String connection = cols.get(3).select("span").text().replaceAll("\\s+", " ");
+                connection = delZeroInFirstPosition(connection.split(" ")).trim();
 
                 String[] fragmentLineAndNum = lineAndNumber.split(" ");
                 if (fragmentLineAndNum.length < NUM_LINES_AND_STATIONS) {
-                    stations.add(new Station(nameOfStation, fragmentLineAndNum[0], fragmentLineAndNum[1], connections));
+                    stations.add(new Station(nameOfStation, fragmentLineAndNum[0], fragmentLineAndNum[1], connection));
                 } else {
-                    stations.add(new Station(nameOfStation, fragmentLineAndNum[0], fragmentLineAndNum[2], connections));
-                    stations.add(new Station(nameOfStation, fragmentLineAndNum[1], fragmentLineAndNum[2], connections));
+                    stations.add(new Station(nameOfStation, fragmentLineAndNum[0], fragmentLineAndNum[2], connection));
+                    stations.add(new Station(nameOfStation, fragmentLineAndNum[1], fragmentLineAndNum[2], connection));
                 }
 
                 lines.put(fragmentLineAndNum[0], nameOfLine);
+
+                String connectStation = "";
+                int numOfSpan = cols.get(3).select("span").size();
+                if (numOfSpan <= 2) {
+                    connectStation = cols.get(3).select("span")
+                            .attr("title")
+                            .replace("Переход на станцию ", "");
+
+                    if (connection.length() >= 1) {
+                        connections.add(fragmentLineAndNum[0] + "+" + nameOfStation);
+                        connections.add(connection + "+" + connectStation.split(" ")[0]);
+                    }
+                } else {
+                    for (int j = 1; j < numOfSpan / 2 + 1; j ++) {
+                        connectStation = cols.get(3).select("span").get(j * 2 - 1)
+                                .attr("title")
+                                .replace("Переход на станцию ", "");
+
+                        if (connection.length() >= 1) {
+                            connections.add(fragmentLineAndNum[0] + "+" + nameOfStation);
+                            connections.add(connection.split(" ")[j - 1] + "+" + connectStation.split(" ")[0]);
+                        }
+                    }
+                }
             }
         }
     }
@@ -107,7 +129,38 @@ public class Loader {
 
         stationsJson.put("stations", linesJson);
 
-        JSONObject lineObj = new JSONObject();
+        JSONObject stationJson;
+        JSONArray arr;
+        JSONArray connectJson = new JSONArray();
+
+
+        int i = 0;
+        while (i < connections.size()) {
+            stationJson = new JSONObject();
+            arr = new JSONArray();
+            stationJson.put("line", connections.get(i).split("\\+")[0]);
+            stationJson.put("name", connections.get(i).split("\\+")[1]);
+            arr.add(stationJson);
+            stationJson = new JSONObject();
+            stationJson.put("line", connections.get(i + 1).split("\\+")[0]);
+            String stationName = "";
+            for (Station s : stations) {
+                if (s.getName().contains(connections.get(i + 1).split("\\+")[1])) {
+                    stationName = s.getName();
+                    break;
+                }
+            }
+            stationJson.put("name", stationName);
+            arr.add(stationJson);
+
+            connectJson.add(arr);
+            i += 2;
+        }
+
+        stationsJson.put("connections", connectJson);
+
+
+        JSONObject lineObj;
         JSONArray lineArr = new JSONArray();
 
         for (String key : lines.keySet()) {

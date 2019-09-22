@@ -8,11 +8,9 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class ReadJson {
-    private final static String dataFile = "outFile/MapMsc.json";
-
-    public String readJ() throws ParseException {
+    public static String readJ(String dataFile) throws ParseException {
         JSONParser parser = new JSONParser();
-        JSONObject jsonData = (JSONObject) parser.parse(getJsonFile());
+        JSONObject jsonData = (JSONObject) parser.parse(getJsonFile(dataFile));
 
         JSONObject stationsObject = (JSONObject) jsonData.get("stations");
         String out = parseStations(stationsObject);
@@ -31,7 +29,7 @@ public class ReadJson {
         return out;
     }
 
-    private static String getJsonFile()
+    private static String getJsonFile(String dataFile)
     {
         StringBuilder builder = new StringBuilder();
         try {
