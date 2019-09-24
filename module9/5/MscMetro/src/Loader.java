@@ -30,7 +30,7 @@ public class Loader {
         parseStationsFromWikipedia(doc, NUM_ON_PAGE + 2);
 
         createJsonFile();
-        
+
         lines.forEach((k, v) -> System.out.println(k + " - " + v));
 
         System.out.println("\n\n---------Read Json");
