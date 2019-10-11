@@ -12,6 +12,26 @@ public class Student {
     @Column(name = "registration_date")
     private Date registrationDate;
 
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Student stud = (Student) obj;
+        return  age == stud.age && name.equals(stud.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
     public int getId() {
         return id;
     }

@@ -1,5 +1,6 @@
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Courses")
@@ -26,7 +27,7 @@ public class Course {
         joinColumns = {@JoinColumn(name = "course_id")},
         inverseJoinColumns = {@JoinColumn(name = "student_id")}
     )
-    private List<Student> students;
+    private Set<Student> students;
 
     public int getId() {
         return id;
@@ -100,11 +101,11 @@ public class Course {
         this.pricePerHour = pricePerHour;
     }
 
-    public List<Student> getStudents() {
+    public Set<Student> getStudents() {
         return students;
     }
 
-    public void setStudents(List<Student> students) {
+    public void setStudents(Set<Student> students) {
         this.students = students;
     }
 }
