@@ -17,11 +17,9 @@ public class Main {
             }
             service.shutdown();
             try {
-                if (!service.awaitTermination(60, TimeUnit.SECONDS)) {
-                    service.shutdownNow();
-                }
-            } catch (InterruptedException ie) {
-                service.shutdownNow();
+                service.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         } else {
             System.out.println("Problem with folder!");
