@@ -10,7 +10,7 @@ public class BankTransferTest extends Thread {
     @Override
     public void run() {
         super.run();
-        for (;;){
+        for (int i = 0; i < 100; i++){
             try {
                 String transferRes = bank.transfer(
                         Long.toString((long) (Math.random() * numberOfClients)),

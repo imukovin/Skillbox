@@ -2,10 +2,12 @@ public class Account
 {
     private long money;
     private String accNumber;
+    private boolean isblocked;
 
     public Account(long money, String accNumber) {
         this.money = money;
         this.accNumber = accNumber;
+        this.isblocked = false;
     }
 
     public long getMoney() {
@@ -22,5 +24,13 @@ public class Account
 
     public void setAccNumber(String accNumber) {
         this.accNumber = accNumber;
+    }
+
+    public boolean isIsblocked() {
+        return isblocked;
+    }
+
+    public void setIsblocked(boolean isblocked) {
+        this.isblocked = isblocked;
     }
 }
