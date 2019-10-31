@@ -34,9 +34,14 @@ public class Bank {
                 if (fromAccountNum.equals(toAccountNum)) {
                     return "You can't transfer money yourself!";
                 } else {
-                    synchronized (this) {
-                        accounts.get(fromAccountNum).setMoney(accounts.get(fromAccountNum).getMoney() - amount);
-                        accounts.get(toAccountNum).setMoney(accounts.get(toAccountNum).getMoney() + amount);
+                    Account fromAccount = accounts.get(fromAccountNum);
+                    Account toAccount = accounts.get(toAccountNum);
+
+                    synchronized (fromAccount) {
+                        fromAccount.setMoney(fromAccount.getMoney() - amount);
+                        synchronized (toAccount) {
+                            toAccount.setMoney(toAccount.getMoney() + amount);
+                        }
                     }
                     return "Client: " + fromAccountNum + " transfer amount: " + amount + " to " + toAccountNum;
                 }
