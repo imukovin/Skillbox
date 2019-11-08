@@ -21,11 +21,18 @@ public class Loader {
         BankGetAmountTest bg = new BankGetAmountTest(bank, NUM_OF_CLIENTS);
         bg.start();
 
-        BankTransferTest bt = new BankTransferTest(bank, NUM_OF_CLIENTS);
+        long deadlockClientA = (long) (Math.random() * NUM_OF_CLIENTS);
+        long deadlockClientB = (long) (Math.random() * NUM_OF_CLIENTS);
+        long moneyForTransfer = 10;
+
+        BankTransferTest bt = new BankTransferTest(bank, NUM_OF_CLIENTS, deadlockClientA, deadlockClientB, moneyForTransfer);
         bt.start();
+        BankTransferTest bt1 = new BankTransferTest(bank, NUM_OF_CLIENTS, deadlockClientB, deadlockClientA, moneyForTransfer);
+        bt1.start();
 
         bg.join();
         bt.join();
+        bt1.join();
 
         AtomicLong allMoney = new AtomicLong();
         bank.getAccounts().forEach((s, account) -> allMoney.addAndGet(account.getMoney()));
