@@ -1,19 +1,26 @@
-import java.util.ArrayList;
-import java.util.concurrent.ForkJoinPool;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class Loader {
     private static final String URL = "https://skillbox.ru/";
 
-    public static void main(String[] args) {
-        ArrayList<String> res = new ForkJoinPool().invoke(new InsideLinks(URL));
+    public static void main(String[] args) throws Exception {
+        Set<String> allLinks = new HashSet<>();
+        ExecutorService service = Executors.newFixedThreadPool(4);
 
-        System.out.println(URL);
-        for (String r : res) {
-            int tubsNum = r.split("/").length - 3;
-            for (int i = 0; i < tubsNum; i++) {
-                System.out.print("\t");
+        Future res = service.submit(new GetLinksCallable(URL));
+        boolean isAdded = true;
+        while (isAdded != false) {
+            Set<String> links = (Set<String>) res.get();
+            isAdded = allLinks.addAll(links);
+            for (String l : links) {
+                res = service.submit(new GetLinksCallable(l));
             }
-            System.out.println(r);
+        }
+        service.shutdown();
+
+        for (String a : allLinks) {
+            System.out.println(a);
         }
     }
 }
