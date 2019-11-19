@@ -8,30 +8,31 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-public class GetLinksCallable implements Callable {
-    private static final String MAIN_URL = "https://skillbox.ru/";
-
+public class GetLinksCallable implements Callable<Set<String>> {
     private Set<String> linksFromPage = new HashSet<>();
     private String link;
+    private String mainUrl;
 
-    public GetLinksCallable(String link) {
+    public GetLinksCallable(String link, String mainUrl) {
         this.link = link;
+        this.mainUrl = mainUrl;
     }
 
     @Override
-    public Object call() throws Exception {
-        Elements element = null;
+    public Set<String> call() {
+        Elements element;
         try {
             Document doc = Jsoup.connect(link).maxBodySize(0).get();
             element = doc.select("a[href]");
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            return null;
         }
 
         for (Element l : element) {
             String linkIn = l.attr("abs:href");
-            if (!linkIn.equals(MAIN_URL)) {
-                if (linkIn.contains(MAIN_URL)) {
+            if (!linkIn.equals(mainUrl)) {
+                if (linkIn.contains(mainUrl)) {
                     //System.out.println(linkIn);
                     linksFromPage.add(linkIn);
                 }
