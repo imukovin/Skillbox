@@ -36,10 +36,18 @@ public class Bank {
                 } else {
                     Account fromAccount = accounts.get(fromAccountNum);
                     Account toAccount = accounts.get(toAccountNum);
-
-                    synchronized (fromAccount) {
+                    Account firstBlock;
+                    Account secondBlock;
+                    if (Integer.parseInt(toAccount.getAccNumber()) < Integer.parseInt(fromAccount.getAccNumber())) {
+                        firstBlock = toAccount;
+                        secondBlock = fromAccount;
+                    } else {
+                        firstBlock = fromAccount;
+                        secondBlock = toAccount;
+                    }
+                    synchronized (firstBlock) {
                         fromAccount.setMoney(fromAccount.getMoney() - amount);
-                        synchronized (toAccount) {
+                        synchronized (secondBlock) {
                             toAccount.setMoney(toAccount.getMoney() + amount);
                         }
                     }

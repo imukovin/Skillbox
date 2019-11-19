@@ -27,7 +27,7 @@ public class BankTransferTest extends Thread {
             e.printStackTrace();
         }
 
-        for (int i = 0; i < 100; i++){
+        /*for (int i = 0; i < 100; i++){
             try {
                 String transferRes = bank.transfer(
                         Long.toString((long) (Math.random() * numberOfClients)),
@@ -39,7 +39,7 @@ public class BankTransferTest extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 }
 
