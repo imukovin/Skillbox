@@ -15,6 +15,10 @@ https://skillbox.ru/
 	https://skillbox.ru/marketing/
 	https://skillbox.ru/marketolog/
 	https://skillbox.ru/media/
+			https://skillbox.ru/media/code/mitrofanov_story/
+			https://skillbox.ru/media/design/story_sleptsov/
+			https://skillbox.ru/media/marketing/story_gagarina/
+			https://skillbox.ru/media/topic/history/
 	https://skillbox.ru/oferta.pdf
 	https://skillbox.ru/otzyvy/
 	https://skillbox.ru/privacy_policy.pdf
