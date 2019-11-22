@@ -7,14 +7,18 @@ public class Dec implements Runnable {
         this.sr = sr;
         this.myLock = myLock;
         this.countDec = countDec;
+
+        this.myLock.setSr(sr);
     }
 
     @Override
-    public synchronized void run() {
-        myLock.lock();
-        for (int i = 0; i < countDec; i++) {
-            sr.dec();
-        }
-        myLock.unlock();
+    public void run() {
+            myLock.lock();
+        //synchronized (sr) {
+            for (int i = 0; i < countDec; i++) {
+                sr.dec();
+            }
+       // }
+            myLock.unlock();
     }
 }

@@ -1,13 +1,21 @@
 https://skillbox.ru/
+	https://skillbox.ru/agima/
 	https://skillbox.ru/career/
 	https://skillbox.ru/code/
 	https://skillbox.ru/company/
 	https://skillbox.ru/contacts/
 		https://skillbox.ru/course/aic/
 		https://skillbox.ru/course/java/
+		https://skillbox.ru/course/profession-c-plus-plus/
+		https://skillbox.ru/course/profession-data-analyst/
+		https://skillbox.ru/course/profession-machine-learning/
+		https://skillbox.ru/course/profession-test/
+		https://skillbox.ru/course/profession-unreal-engine-4/
+		https://skillbox.ru/course/python/
 		https://skillbox.ru/course/smm/
 		https://skillbox.ru/course/webdesign/
 	https://skillbox.ru/design/
+	https://skillbox.ru/frontend-developer/
 	https://skillbox.ru/graphic-design/
 	https://skillbox.ru/instagram/
 	https://skillbox.ru/jobs/
@@ -17,7 +25,9 @@ https://skillbox.ru/
 	https://skillbox.ru/media/
 	https://skillbox.ru/oferta.pdf
 	https://skillbox.ru/otzyvy/
+	https://skillbox.ru/php/
 	https://skillbox.ru/privacy_policy.pdf
+	https://skillbox.ru/python-data/
 	https://skillbox.ru/rmr/
 	https://skillbox.ru/sketching/
 	https://skillbox.ru/skillbox-licence.pdf

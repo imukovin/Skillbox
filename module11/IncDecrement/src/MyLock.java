@@ -1,29 +1,34 @@
 public class MyLock {
     private long currentNumOfThread;
     private boolean isLock;
-    Object obj;
+    private SharedRecource sr;
+
+    MyLock() {
+        currentNumOfThread = -1;
+    }
 
     public void lock() {
-            if (currentNumOfThread != Thread.currentThread().getId()) {
-                currentNumOfThread = Thread.currentThread().getId();
+        synchronized (sr) {
+            if (!isLock) {
                 isLock = true;
-                while (isLock) {
                     try {
-                        wait();
+                        sr.wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                }
             }
+        }
     }
 
     public void unlock() {
+        synchronized (sr) {
             currentNumOfThread = -1;
             isLock = false;
-            notify();
+            sr.notify();
+        }
     }
 
-    public void setObj(Object obj) {
-        this.obj = obj;
+    public void setSr(SharedRecource sr) {
+        this.sr = sr;
     }
 }

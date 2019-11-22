@@ -6,14 +6,13 @@ import java.util.concurrent.*;
 public class Loader {
     private static final String URL = "https://skillbox.ru/";
     private static final int NUM_OF_SLASH = 3;
-    private static final MyReentrantLock MY_REENTRANT_LOCK = new MyReentrantLock();
 
     public static void main(String[] args) throws Exception {
         Set<String> allLinks = new HashSet<>();
         ExecutorService service = Executors.newFixedThreadPool(10);
         CompletionService<Set<String>> completionService = new ExecutorCompletionService<>(service);
 
-        completionService.submit(new GetLinksCallable(URL, URL, MY_REENTRANT_LOCK));
+        completionService.submit(new GetLinksCallable(URL, URL));
         boolean errors = false;
         int numOfTasks = 1;
         while (!errors && numOfTasks > 0) {
@@ -24,7 +23,7 @@ public class Loader {
                 for (String l : result) {
                     if (!allLinks.contains(l)) {
                         allLinks.add(l);
-                        completionService.submit(new GetLinksCallable(l, URL, MY_REENTRANT_LOCK));
+                        completionService.submit(new GetLinksCallable(l, URL));
                         numOfTasks++;
                     }
                 }

@@ -7,14 +7,18 @@ public class Inc implements Runnable {
         this.sr = sr;
         this.myLock = myLock;
         this.countInc = countInc;
+
+        this.myLock.setSr(sr);
     }
 
     @Override
-    public synchronized void run() {
-        myLock.lock();
-        for (int i = 0; i < countInc; i++) {
-            sr.inc();
-        }
-        myLock.unlock();
+    public void run() {
+            //myLock.lock();
+        //synchronized (sr) {
+            for (int i = 0; i < countInc; i++) {
+                sr.inc();
+            }
+        //}
+            //myLock.unlock();
     }
 }
