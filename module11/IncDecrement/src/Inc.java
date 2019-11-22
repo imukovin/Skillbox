@@ -13,12 +13,10 @@ public class Inc implements Runnable {
 
     @Override
     public void run() {
-            //myLock.lock();
-        //synchronized (sr) {
-            for (int i = 0; i < countInc; i++) {
-                sr.inc();
-            }
-        //}
-            //myLock.unlock();
+        myLock.lock();
+        for (int i = 0; i < countInc; i++) {
+            sr.inc();
+        }
+        myLock.unlock();
     }
 }

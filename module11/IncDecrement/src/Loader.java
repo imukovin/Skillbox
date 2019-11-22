@@ -1,14 +1,18 @@
 public class Loader {
     private static final MyLock MY_LOCK = new MyLock();
-    private static SharedRecource sr;
+    private SharedRecource sr;
 
-    public static void main(String[] args) throws InterruptedException {
-        sr = new SharedRecource();
-
-        System.out.println(getResult(100000, 10000));
+    Loader(SharedRecource sr) {
+        this.sr = sr;
     }
 
-    private static int getResult(int countInc, int countDec) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
+        //sr = new SharedRecource();
+
+        //System.out.println(getResult(100000, 10000));
+    }
+
+    public int getResult(int countInc, int countDec) throws InterruptedException {
         Inc inc = new Inc(sr, countInc, MY_LOCK);
         Dec dec = new Dec(sr, countDec, MY_LOCK);
 
