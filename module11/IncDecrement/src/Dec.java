@@ -7,8 +7,6 @@ public class Dec implements Runnable {
         this.sr = sr;
         this.myLock = myLock;
         this.countDec = countDec;
-
-        this.myLock.setSr(sr);
     }
 
     @Override

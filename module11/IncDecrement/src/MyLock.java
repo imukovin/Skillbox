@@ -1,28 +1,28 @@
 public class MyLock {
+    private int numOfCalls;
     private boolean isLock;
-    private SharedRecource sr;
 
     public void lock() {
-        synchronized (sr) {
-            if (!isLock) {
-                isLock = true;
-                try {
-                    sr.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        if (!Thread.currentThread().getName().equals("main") && numOfCalls == 0) {
+            synchronized (this) {
+                if (!isLock) {
+                    isLock = true;
+                    try {
+                        this.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
+        numOfCalls++;
     }
 
     public void unlock() {
-        synchronized (sr) {
+        numOfCalls = 0;
+        synchronized (this) {
             isLock = false;
-            sr.notify();
+            this.notify();
         }
-    }
-
-    public void setSr(SharedRecource sr) {
-        this.sr = sr;
     }
 }
