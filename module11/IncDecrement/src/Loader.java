@@ -1,3 +1,5 @@
+import com.sun.tools.javac.Main;
+
 public class Loader {
     private static final MyLock MY_LOCK = new MyLock();
     private SharedRecource sr;
@@ -8,7 +10,6 @@ public class Loader {
 
     public static void main(String[] args) throws InterruptedException {
         //sr = new SharedRecource();
-
         //System.out.println(getResult(100000, 10000));
     }
 

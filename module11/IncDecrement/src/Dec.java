@@ -12,8 +12,10 @@ public class Dec implements Runnable {
     @Override
     public void run() {
         myLock.lock();
+        //myLock.lock();
         for (int i = 0; i < countDec; i++) {
             sr.dec();
+            //System.out.println("---" + i);
         }
         myLock.unlock();
     }

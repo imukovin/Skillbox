@@ -4,6 +4,11 @@ import org.junit.Test;
 public class TestLoader {
     @Test
     public void TestGetResult() throws InterruptedException {
+        /*MyLock l = new MyLock();
+        l.lock();
+        System.out.println("Hi");
+        l.unlock();*/
+
         Loader loader = new Loader(new SharedRecource());
         int expectedResult = 90000;
         int result = loader.getResult(100000, 10000);
