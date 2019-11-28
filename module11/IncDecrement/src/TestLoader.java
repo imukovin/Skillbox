@@ -14,9 +14,9 @@ public class TestLoader {
         int result = loader.getResult(100000, 10000);
         Assert.assertEquals(expectedResult, result);
 
-        /*loader = new Loader(new SharedRecource());
+        loader = new Loader(new SharedRecource());
         expectedResult = 80000;
         result = loader.getResult(100000, 20000);
-        Assert.assertEquals(expectedResult, result);*/
+        Assert.assertEquals(expectedResult, result);
     }
 }

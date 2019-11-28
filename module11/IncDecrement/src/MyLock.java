@@ -1,14 +1,11 @@
 public class MyLock {
-    private volatile boolean isLock = false;
-    //private volatile long currThread = -1;
+    private boolean isLock = false;
+    private long currThread = -1;
 
     public void lock() {
-        if (Thread.currentThread().getId() != 1) {
-            if (!isLock) {
-                System.out.printf("Thread %2d: isLock=true (was=%s) %n", Thread.currentThread().getId(), Boolean.toString(isLock));
+        if (Thread.currentThread().getId() != 1 && currThread != Thread.currentThread().getId()) {
+            if (isLock) {
                 synchronized (this) {
-                    //currThread = Thread.currentThread().getId();
-                    isLock = true;
                     while (isLock) {
                         try {
                             System.out.printf("Thread %2d: this.wait%n", Thread.currentThread().getId());
@@ -21,14 +18,19 @@ public class MyLock {
                     System.out.printf("Thread %2d: exited while(isLock)%n", Thread.currentThread().getId());
                 }
             }
+            if (!isLock) {
+                isLock = true;
+                currThread = Thread.currentThread().getId();
+                System.out.printf("Thread %2d: isLock=true (was=%s) %n", Thread.currentThread().getId(), Boolean.toString(isLock));
+            }
         }
     }
 
     public void unlock() {
         System.out.printf("Thread %2d: isLock=false. notify%n", Thread.currentThread().getId());
+        isLock = false;
+        currThread = -1;
         synchronized (this) {
-            isLock = false;
-            //currThread = -1;
             this.notify();
         }
     }
