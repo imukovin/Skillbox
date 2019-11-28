@@ -1,5 +1,7 @@
 import com.sun.tools.javac.Main;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 public class Loader {
     private static final MyLock MY_LOCK = new MyLock();
     private SharedRecource sr;
