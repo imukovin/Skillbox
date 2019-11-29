@@ -4,24 +4,25 @@ public class MyLock {
 
     public void lock() {
         if (Thread.currentThread().getId() != 1 && currThread != Thread.currentThread().getId()) {
-            if (isLock) {
-                synchronized (this) {
+            synchronized (this) {
+                if (isLock) {
                     while (isLock) {
                         try {
                             System.out.printf("Thread %2d: this.wait%n", Thread.currentThread().getId());
-                            this.wait();
+                            if (isLock) {
+                                this.wait();
+                            }
                             System.out.printf("Thread %2d: this.waked up%n", Thread.currentThread().getId());
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
                     System.out.printf("Thread %2d: exited while(isLock)%n", Thread.currentThread().getId());
+                } else {
+                    isLock = true;
+                    currThread = Thread.currentThread().getId();
+                    System.out.printf("Thread %2d: isLock=true (was=%s) %n", Thread.currentThread().getId(), Boolean.toString(isLock));
                 }
-            }
-            if (!isLock) {
-                isLock = true;
-                currThread = Thread.currentThread().getId();
-                System.out.printf("Thread %2d: isLock=true (was=%s) %n", Thread.currentThread().getId(), Boolean.toString(isLock));
             }
         }
     }
