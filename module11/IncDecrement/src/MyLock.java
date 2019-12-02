@@ -29,9 +29,9 @@ public class MyLock {
 
     public void unlock() {
         System.out.printf("Thread %2d: isLock=false. notify%n", Thread.currentThread().getId());
-        isLock = false;
-        currThread = -1;
         synchronized (this) {
+            isLock = false;
+            currThread = -1;
             this.notify();
         }
     }
