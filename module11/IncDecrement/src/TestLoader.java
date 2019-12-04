@@ -22,14 +22,16 @@ public class TestLoader {
         Assert.assertEquals(expectedResult, result);*/
 
         Thread t1 = new Thread(() -> {
-            for (int i = 0; i < 10_000; i++) {
+            for (int i = 0; i < 100_000; i++) {
+                lock.lock();
                 lock.lock();
                 c++;
                 lock.unlock();
             }
         });
         Thread t2 = new Thread(() -> {
-            for (int i = 0; i < 10_000; i++) {
+            for (int i = 0; i < 100_000; i++) {
+                lock.lock();
                 lock.lock();
                 c--;
                 lock.unlock();
