@@ -11,12 +11,12 @@ public class BankTransferTest extends Thread {
     public void run() {
         super.run();
 
-        for (int i = 0; i < 100; i++){
+        for (int i = 0; i < 10; i++){
             try {
                 String transferRes = bank.transfer(
-                        Long.toString((long) (Math.random() * numberOfClients)),
-                        Long.toString((long) (Math.random() * numberOfClients)),
-                        (long) (Math.random() * 1_000_000));
+                        Long.toString((long) (Math.random() * numberOfClients) + 1),
+                        Long.toString((long) (Math.random() * numberOfClients) + 1),
+                        (long) (Math.random() * 10_000));
                 System.out.println(transferRes);
 
                 sleep(100);

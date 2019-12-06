@@ -51,7 +51,7 @@ public class Bank {
                             toAccount.setMoney(toAccount.getMoney() + amount);
                         }
                     }
-                    return "Client: " + fromAccountNum + " transfer amount: " + amount + " to " + toAccountNum;
+                    return "Client: " + fromAccountNum + " transfer amount: " + amount + " to " + toAccountNum + "------ current money (from account)" + fromAccount.getMoney();
                 }
             } else {
                 return "Client: " + fromAccountNum + "  don't have enough money!";

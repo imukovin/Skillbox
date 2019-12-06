@@ -10,8 +10,8 @@ public class BankGetAmountTest extends Thread {
     @Override
     public void run() {
         super.run();
-        for (int i = 0; i < 100; i++){
-            String client = Long.toString((long) (Math.random() * numberOfClients));
+        for (int i = 0; i < 10; i++){
+            String client = Long.toString((long) (Math.random() * numberOfClients) + 1);
             System.out.println("Client number: " + client + " get balance - " + bank.getBalance(client));
 
             try {

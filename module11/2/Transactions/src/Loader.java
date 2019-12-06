@@ -1,12 +1,17 @@
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Loader {
     private static final int MAX_MONEY = 1_000_000;
-    private static final int NUM_OF_CLIENTS = 1000;
+    private static final int NUM_OF_CLIENTS = 2;
 
     public static void main(String[] args) throws InterruptedException {
         Bank bank = new Bank();
         long allClientsMoney = 0L;
+
+        ExecutorService service = Executors.newFixedThreadPool(4);
 
         for (int i = 1; i <= NUM_OF_CLIENTS; i++){
             long money = (long)((Math.random() + 0.1) / i * MAX_MONEY);
@@ -18,14 +23,19 @@ public class Loader {
 
         System.out.println("All clients money: " + allClientsMoney);
 
-        BankGetAmountTest bg = new BankGetAmountTest(bank, NUM_OF_CLIENTS);
+        for (int i = 0; i < 10; i++) {
+            service.submit(new BankTransferTest(bank, NUM_OF_CLIENTS));
+        }
+        service.shutdown();
+        service.awaitTermination(100000, TimeUnit.SECONDS);
+        /*BankGetAmountTest bg = new BankGetAmountTest(bank, NUM_OF_CLIENTS);
         bg.start();
 
         BankTransferTest bt = new BankTransferTest(bank, NUM_OF_CLIENTS);
         bt.start();
 
         bg.join();
-        bt.join();
+        bt.join();*/
 
         AtomicLong allMoney = new AtomicLong();
         bank.getAccounts().forEach((s, account) -> allMoney.addAndGet(account.getMoney()));
