@@ -4,7 +4,7 @@ import java.util.Random;
 public class Bank {
     private static final int MIN_AMOUNT_AS_FRAUD = 50_000;
 
-    private HashMap<String, Account> accounts = new HashMap<>();
+    private volatile HashMap<String, Account> accounts = new HashMap<>();
     private final Random random = new Random();
 
     public synchronized boolean isFraud(String fromAccountNum, String toAccountNum, long amount)
@@ -34,24 +34,22 @@ public class Bank {
                 if (fromAccountNum.equals(toAccountNum)) {
                     return "You can't transfer money yourself!";
                 } else {
-                    Account fromAccount = accounts.get(fromAccountNum);
-                    Account toAccount = accounts.get(toAccountNum);
                     Account firstBlock;
                     Account secondBlock;
-                    if (Integer.parseInt(toAccount.getAccNumber()) < Integer.parseInt(fromAccount.getAccNumber())) {
-                        firstBlock = toAccount;
-                        secondBlock = fromAccount;
+                    if (Integer.parseInt(accounts.get(toAccountNum).getAccNumber()) < Integer.parseInt(accounts.get(fromAccountNum).getAccNumber())) {
+                        firstBlock = accounts.get(toAccountNum);
+                        secondBlock = accounts.get(fromAccountNum);
                     } else {
-                        firstBlock = fromAccount;
-                        secondBlock = toAccount;
+                        firstBlock = accounts.get(fromAccountNum);
+                        secondBlock = accounts.get(toAccountNum);
                     }
                     synchronized (firstBlock) {
-                        fromAccount.setMoney(fromAccount.getMoney() - amount);
+                        accounts.get(fromAccountNum).setMoney(accounts.get(fromAccountNum).getMoney() - amount);
                         synchronized (secondBlock) {
-                            toAccount.setMoney(toAccount.getMoney() + amount);
+                            accounts.get(toAccountNum).setMoney(accounts.get(toAccountNum).getMoney() + amount);
                         }
                     }
-                    return "Client: " + fromAccountNum + " transfer amount: " + amount + " to " + toAccountNum + "------ current money (from account)" + fromAccount.getMoney();
+                    return "Client: " + fromAccountNum + " transfer amount: " + amount + " to " + toAccountNum + "------ current money (from account)" + accounts.get(fromAccountNum).getMoney();
                 }
             } else {
                 return "Client: " + fromAccountNum + "  don't have enough money!";
