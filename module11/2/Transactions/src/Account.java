@@ -1,8 +1,8 @@
 public class Account
 {
-    private long money;
+    private volatile long money;
     private String accNumber;
-    private boolean isblocked;
+    private volatile boolean isblocked;
 
     public Account(long money, String accNumber) {
         this.money = money;

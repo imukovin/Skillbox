@@ -4,7 +4,7 @@ import java.util.Random;
 public class Bank {
     private static final int MIN_AMOUNT_AS_FRAUD = 50_000;
 
-    private volatile HashMap<String, Account> accounts = new HashMap<>();
+    private HashMap<String, Account> accounts = new HashMap<>();
     private final Random random = new Random();
 
     public synchronized boolean isFraud(String fromAccountNum, String toAccountNum, long amount)
