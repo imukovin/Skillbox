@@ -34,19 +34,19 @@ public class Bank {
                 if (fromAccountNum.equals(toAccountNum)) {
                     return "You can't transfer money yourself!";
                 } else {
-                    Account firstBlock;
-                    Account secondBlock;
                     if (Integer.parseInt(accounts.get(toAccountNum).getAccNumber()) < Integer.parseInt(accounts.get(fromAccountNum).getAccNumber())) {
-                        firstBlock = accounts.get(toAccountNum);
-                        secondBlock = accounts.get(fromAccountNum);
+                        synchronized (accounts.get(toAccountNum)) {
+                            accounts.get(fromAccountNum).setMoney(accounts.get(fromAccountNum).getMoney() - amount);
+                            synchronized (accounts.get(fromAccountNum)) {
+                                accounts.get(toAccountNum).setMoney(accounts.get(toAccountNum).getMoney() + amount);
+                            }
+                        }
                     } else {
-                        firstBlock = accounts.get(fromAccountNum);
-                        secondBlock = accounts.get(toAccountNum);
-                    }
-                    synchronized (firstBlock) {
-                        accounts.get(fromAccountNum).setMoney(accounts.get(fromAccountNum).getMoney() - amount);
-                        synchronized (secondBlock) {
-                            accounts.get(toAccountNum).setMoney(accounts.get(toAccountNum).getMoney() + amount);
+                        synchronized (accounts.get(fromAccountNum)) {
+                            accounts.get(fromAccountNum).setMoney(accounts.get(fromAccountNum).getMoney() - amount);
+                            synchronized (accounts.get(toAccountNum)) {
+                                accounts.get(toAccountNum).setMoney(accounts.get(toAccountNum).getMoney() + amount);
+                            }
                         }
                     }
                     return "Client: " + fromAccountNum + " transfer amount: " + amount + " to " + toAccountNum + "------ current money (from account)" + accounts.get(fromAccountNum).getMoney();
