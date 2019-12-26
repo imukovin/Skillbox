@@ -36,15 +36,15 @@ public class Bank {
                 } else {
                     if (Integer.parseInt(accounts.get(toAccountNum).getAccNumber()) < Integer.parseInt(accounts.get(fromAccountNum).getAccNumber())) {
                         synchronized (accounts.get(toAccountNum)) {
-                            accounts.get(fromAccountNum).setMoney(accounts.get(fromAccountNum).getMoney() - amount);
                             synchronized (accounts.get(fromAccountNum)) {
+                                accounts.get(fromAccountNum).setMoney(accounts.get(fromAccountNum).getMoney() - amount);
                                 accounts.get(toAccountNum).setMoney(accounts.get(toAccountNum).getMoney() + amount);
                             }
                         }
                     } else {
                         synchronized (accounts.get(fromAccountNum)) {
-                            accounts.get(fromAccountNum).setMoney(accounts.get(fromAccountNum).getMoney() - amount);
                             synchronized (accounts.get(toAccountNum)) {
+                                accounts.get(fromAccountNum).setMoney(accounts.get(fromAccountNum).getMoney() - amount);
                                 accounts.get(toAccountNum).setMoney(accounts.get(toAccountNum).getMoney() + amount);
                             }
                         }
