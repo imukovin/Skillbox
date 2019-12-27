@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class Loader {
     private static final int MAX_MONEY = 1_000_000;
-    private static final int NUM_OF_CLIENTS = 3;
+    private static final int NUM_OF_CLIENTS = 20;
     private static Bank bank;
 
     public static void main(String[] args) throws InterruptedException {
@@ -24,8 +24,9 @@ public class Loader {
 
         System.out.println("All clients money: " + allClientsMoney);
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 10; i++) {
             service.submit(new BankTransferTest(bank, NUM_OF_CLIENTS));
+            service.submit(new BankGetAmountTest(bank, NUM_OF_CLIENTS));
         }
         service.shutdown();
         service.awaitTermination(100000, TimeUnit.SECONDS);

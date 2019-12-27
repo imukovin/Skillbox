@@ -1,3 +1,4 @@
+
 public class BankGetAmountTest extends Thread {
     private Bank bank;
     private int numberOfClients;
@@ -10,15 +11,15 @@ public class BankGetAmountTest extends Thread {
     @Override
     public void run() {
         super.run();
-        for (int i = 0; i < 10; i++){
+        for (int i = 0; i < 350; i++){
             String client = Long.toString((long) (Math.random() * numberOfClients) + 1);
             System.out.println("Client number: " + client + " get balance - " + bank.getBalance(client));
-
-            try {
+            //System.out.println(Thread.currentThread().getId());
+            /*try {
                 sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
     }
 }
