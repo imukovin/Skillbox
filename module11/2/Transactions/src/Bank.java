@@ -3,7 +3,6 @@ import java.util.Random;
 
 public class Bank {
     private static final int MIN_AMOUNT_AS_FRAUD = 50_000;
-    private static final Object tryLoack = new Object();
 
     private HashMap<String, Account> accounts = new HashMap<>();
     private final Random random = new Random();
@@ -63,11 +62,9 @@ public class Bank {
      */
     public long getBalance(String accountNum)
     {
-        synchronized (tryLoack) {
             synchronized (accounts.get(accountNum)) {
                 return accounts.get(accountNum).getMoney();
             }
-        }
     }
 
     public HashMap<String, Account> getAccounts() {
