@@ -62,9 +62,9 @@ public class Bank {
      */
     public long getBalance(String accountNum)
     {
-            synchronized (accounts.get(accountNum)) {
-                return accounts.get(accountNum).getMoney();
-            }
+        synchronized (accounts.get(accountNum)) {
+            return accounts.get(accountNum).getMoney();
+        }
     }
 
     public HashMap<String, Account> getAccounts() {
