@@ -1,17 +1,17 @@
 package main;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Storage {
-    private static HashMap<Integer, Task> tasks = new HashMap<>();
-    private static int currentId = 0;
+    private static ConcurrentHashMap<Integer, Task> tasks = new ConcurrentHashMap<>();
+    private static AtomicInteger currentId = new AtomicInteger(0);
 
     public static int addTaskToStorage(Task task) {
-        currentId++;
-        task.setId(currentId);
-        tasks.put(currentId, task);
-        return currentId;
+        task.setId(currentId.incrementAndGet());
+        tasks.putIfAbsent(currentId.get(), task);
+        return currentId.get();
     }
 
     public static ArrayList<Task> getList() {
