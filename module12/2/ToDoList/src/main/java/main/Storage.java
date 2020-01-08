@@ -20,13 +20,17 @@ public class Storage {
 
     public static void delTask(Integer id) {
         if (id != null) {
-            tasks.remove(id);
+            if (tasks.get(id) != null) {
+                tasks.remove(id);
+            }
         }
     }
 
-    public static void markComplited(Integer id) {
+    public static void markCompleted(Integer id) {
         if (id != null) {
-            tasks.get(id).setStatus(true);
+            if (tasks.get(id) != null) {
+                tasks.get(id).setStatus(true);
+            }
         }
     }
 }

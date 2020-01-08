@@ -21,7 +21,7 @@ public class ListController {
 
     @GetMapping("/listCompl/{id}")
     public void markCompleted(@PathVariable Integer id) {
-        Storage.markComplited(id);
+        Storage.markCompleted(id);
     }
 
     @PostMapping("/list/")
