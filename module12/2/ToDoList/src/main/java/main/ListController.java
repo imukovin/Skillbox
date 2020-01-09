@@ -14,12 +14,12 @@ public class ListController {
         return Storage.getList();
     }
 
-    @GetMapping("/list/{id}")
+    @PostMapping("/list/{id}")
     public void del(@PathVariable Integer id) {
         Storage.delTask(id);
     }
 
-    @GetMapping("/listCompl/{id}")
+    @PostMapping("/listCompl/{id}")
     public void markCompleted(@PathVariable Integer id) {
         Storage.markCompleted(id);
     }

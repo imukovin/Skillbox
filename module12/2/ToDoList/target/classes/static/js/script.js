@@ -39,7 +39,7 @@ $(function(){
     $(document).on('click', '.del-link',function(){
         var id = $(this).parent().attr("id");
         $.ajax({
-            method: "GET",
+            method: "POST",
             url: "/list/" + id
         });
         window.location.reload();
@@ -49,7 +49,7 @@ $(function(){
     $(document).on('click', '.compl-link',function(){
         var id = $(this).parent().attr("id");
         $.ajax({
-            method: "GET",
+            method: "POST",
             url: "/listCompl/" + id
         });
         window.location.reload();

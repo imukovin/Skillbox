@@ -20,16 +20,16 @@ public class Storage {
 
     public static void delTask(Integer id) {
         if (id != null) {
-            if (tasks.get(id) != null) {
-                tasks.remove(id);
-            }
+            tasks.remove(id);
         }
     }
 
     public static void markCompleted(Integer id) {
         if (id != null) {
-            if (tasks.get(id) != null) {
-                tasks.get(id).setStatus(true);
+            synchronized (tasks.get(id)) {
+                if (tasks.get(id) != null) {
+                    tasks.get(id).setStatus(true);
+                }
             }
         }
     }
