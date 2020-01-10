@@ -26,10 +26,9 @@ public class Storage {
 
     public static void markCompleted(Integer id) {
         if (id != null) {
-            synchronized (tasks.get(id)) {
-                if (tasks.get(id) != null) {
-                    tasks.get(id).setStatus(true);
-                }
+            Task t = tasks.get(id);
+            if (t != null) {
+                t.setStatus(true);
             }
         }
     }
