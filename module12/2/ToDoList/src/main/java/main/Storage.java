@@ -30,6 +30,11 @@ public class Storage {
             if (t != null) {
                 t.setStatus(true);
             }
+            /*try {
+                tasks.computeIfAbsent(id, t -> tasks.get(t)).setStatus(true);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }*/
         }
     }
 }
