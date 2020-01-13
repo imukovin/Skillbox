@@ -11,7 +11,7 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    private String text;
+    private String tasktext;
     private String date;
     private boolean status = false;
 
@@ -23,12 +23,12 @@ public class Task {
         this.id = id;
     }
 
-    public String getTask() {
-        return text;
+    public String getTasktext() {
+        return tasktext;
     }
 
-    public void setTask(String text) {
-        this.text = text;
+    public void setTasktext(String tasktext) {
+        this.tasktext = tasktext;
     }
 
     public String getDate() {
