@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Список дел</title>
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/script.js"></script>
+</head>
+<body>
+<h1>Список дел</h1>
+<div id="list-form">
+<form>
+    <h3>Добавление задания</h3>
+    <label>Текст задания:</label>
+    <input type="text" name="tasktext"><br>
+    <label>До какого числа выполнить:</label>
+    <input type="date" name="date"><br>
+    <input type="text" name="status" value="false" hidden><br>
+    <button id="add-task" onclick="window.location.reload();">Добавить</button>
+</form>
+</div>
+<br><br><br>
+<h1>Дела</h1>
+<div th:each="task : ${taskList}" th:unless="${task.status}">
+    <div th:if="${task.isExpired()}" th:attr="id=${task.id}">
+        <b th:text="${task.date} + ': '"></b>
+        <span th:text="${task.tasktext}"></span>
+        <a href="#" class="del-link" onclick="window.location.reload();">Удалить</a>
+        <a href="#" class="compl-link" onclick="window.location.reload();">Выполнено</a>
+    </div>
+    <div th:unless="${task.isExpired()}" th:attr="id=${task.id}">
+        <b style="color:red" th:text="${task.date} + '(задание не выполнено): '"></b>
+        <span th:text="${task.tasktext}"></span>
+        <a href="#" class="del-link" onclick="window.location.reload();">Удалить</a>
+        <a href="#" class="compl-link" onclick="window.location.reload();">Выполнено</a>
+    </div>
+</div>
+<br>
+<h1>Завершенные</h1>
+<div th:each="task : ${taskList}" style="color: #3cab3c" th:if="${task.status}">
+    <b th:text="${task.date} + ': '"></b>
+    <span th:text="${task.tasktext}"></span>
+</div>
+
+</body>
+</html>
