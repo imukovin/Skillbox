@@ -40,6 +40,8 @@
 <div th:each="task : ${taskList}" style="color: #3cab3c" th:if="${task.status}">
     <b th:text="${task.date} + ': '"></b>
     <span th:text="${task.tasktext}"></span>
+    <a href="#" class="del-link" onclick="window.location.reload();">Удалить</a>
+    <a href="#" class="compl-link" onclick="window.location.reload();">Выполнено</a>
 </div>
 
 </body>
