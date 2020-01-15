@@ -37,7 +37,7 @@
 </div>
 <br>
 <h1>Завершенные</h1>
-<div th:each="task : ${taskList}" style="color: #3cab3c" th:if="${task.status}">
+<div th:each="task : ${taskList}" th:attr="id=${task.id}" style="color: #3cab3c" th:if="${task.status}">
     <b th:text="${task.date} + ': '"></b>
     <span th:text="${task.tasktext}"></span>
     <a href="#" class="del-link" onclick="window.location.reload();">Удалить</a>

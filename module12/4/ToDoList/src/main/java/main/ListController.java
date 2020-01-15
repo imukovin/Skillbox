@@ -3,6 +3,7 @@ package main;
 import main.model.Task;
 import main.model.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,22 +30,27 @@ public class ListController {
     }
 
     @PostMapping("/list/{id}")
-    public void del(@PathVariable Integer id) {
+    public ResponseEntity<String> del(@PathVariable Integer id) {
         taskRepository.deleteById(id);
+        return ResponseEntity.ok("ok");
     }
 
     @PostMapping("/listCompl/{id}")
-    public void markCompleted(@PathVariable Integer id) {
+    public ResponseEntity<String> markCompleted(@PathVariable Integer id) {
         Optional<Task> task = taskRepository.findById(id);
         if (task.isPresent()) {
             Task t = task.get();
             t.setStatus(true);
             taskRepository.save(t);
+            return ResponseEntity.ok("ok");
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping("/addtask")
-    public void add(Task task) {
+    public ResponseEntity<String> add(Task task) {
         taskRepository.save(task);
+        return ResponseEntity.ok("ok");
     }
 }
