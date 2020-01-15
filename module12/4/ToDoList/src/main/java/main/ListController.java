@@ -3,6 +3,7 @@ package main;
 import main.model.Task;
 import main.model.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,7 +51,11 @@ public class ListController {
 
     @PostMapping("/addtask")
     public ResponseEntity<String> add(Task task) {
-        taskRepository.save(task);
+        try {
+            taskRepository.save(task);
+        } catch (EmptyResultDataAccessException e) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok("ok");
     }
 }
