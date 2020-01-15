@@ -32,7 +32,11 @@ public class ListController {
 
     @PostMapping("/list/{id}")
     public ResponseEntity<String> del(@PathVariable Integer id) {
-        taskRepository.deleteById(id);
+        try {
+            taskRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok("ok");
     }
 
