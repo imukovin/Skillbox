@@ -2,6 +2,7 @@ package main;
 
 import main.model.Task;
 import main.model.TaskRepository;
+import main.model.ThereIsNoBookException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
@@ -32,12 +33,12 @@ public class ListController {
 
     @PostMapping("/list/{id}")
     public ResponseEntity<String> del(@PathVariable Integer id) {
-        try {
+        Optional<Task> task = taskRepository.findById(id);
+        if (task.isPresent()) {
             taskRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok("ok");
         }
-        return ResponseEntity.ok("ok");
+        throw new ThereIsNoBookException();
     }
 
     @PostMapping("/listCompl/{id}")
@@ -55,11 +56,7 @@ public class ListController {
 
     @PostMapping("/addtask")
     public ResponseEntity<String> add(Task task) {
-        try {
-            taskRepository.save(task);
-        } catch (EmptyResultDataAccessException e) {
-            return ResponseEntity.notFound().build();
-        }
+        taskRepository.save(task);
         return ResponseEntity.ok("ok");
     }
 }

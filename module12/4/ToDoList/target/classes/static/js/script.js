@@ -17,7 +17,7 @@ $(function(){
             method: "POST",
             url: "/list/" + id
         });
-        window.location.reload();
+        //window.location.reload();
     });
 
     //mark as completed
