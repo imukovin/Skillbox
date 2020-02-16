@@ -1,10 +1,10 @@
 package main;
 
+import javassist.NotFoundException;
 import main.model.Task;
 import main.model.TaskRepository;
-import main.model.ThereIsNoBookException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -31,18 +30,18 @@ public class ListController {
         return new ModelAndView("index");
     }
 
-    @PostMapping("/list/{id}")
-    public ResponseEntity<String> del(@PathVariable Integer id) {
+    @DeleteMapping("/list/{id}")
+    public ResponseEntity<String> del(@PathVariable(name = "id") int id) throws NotFoundException {
         Optional<Task> task = taskRepository.findById(id);
         if (task.isPresent()) {
             taskRepository.deleteById(id);
             return ResponseEntity.ok("ok");
         }
-        throw new ThereIsNoBookException();
+        throw new NotFoundException(Integer.toString(id));
     }
 
     @PostMapping("/listCompl/{id}")
-    public ResponseEntity<String> markCompleted(@PathVariable Integer id) {
+    public ResponseEntity<String> markCompleted(@PathVariable Integer id) throws NotFoundException {
         Optional<Task> task = taskRepository.findById(id);
         if (task.isPresent()) {
             Task t = task.get();
@@ -50,7 +49,7 @@ public class ListController {
             taskRepository.save(t);
             return ResponseEntity.ok("ok");
         } else {
-            return ResponseEntity.notFound().build();
+            throw new NotFoundException(Integer.toString(id));
         }
     }
 

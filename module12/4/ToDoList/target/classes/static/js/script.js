@@ -13,10 +13,14 @@ $(function(){
     //del task
     $(document).on('click', '.del-link',function(){
         var id = $(this).parent().attr("id");
-        $.ajax({
-            method: "POST",
-            url: "/list/" + id
-        });
+        var xhr = new XMLHttpRequest();
+        xhr.open('DELETE', 'http://localhost:8080/list/' + id, false);
+        xhr.send();
+        /*$.ajax({
+            //method: "GET",
+            url: "/list/" + id,
+            type : "delete"
+        });*/
         //window.location.reload();
     });
 
