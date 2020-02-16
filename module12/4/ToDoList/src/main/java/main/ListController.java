@@ -54,8 +54,11 @@ public class ListController {
     }
 
     @PostMapping("/addtask")
-    public ResponseEntity<String> add(Task task) {
-        taskRepository.save(task);
-        return ResponseEntity.ok("ok");
+    public ResponseEntity<String> add(Task task) throws NullPointerException {
+        if ((task.getTasktext().length() > 0) && (!task.getDate().isEmpty())) {
+            taskRepository.save(task);
+            return ResponseEntity.ok("ok");
+        }
+        throw new NullPointerException(task.toString());
     }
 }
