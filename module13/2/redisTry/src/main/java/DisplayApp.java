@@ -1,4 +1,5 @@
 import org.redisson.Redisson;
+import org.redisson.api.RBlockingDeque;
 import org.redisson.api.RDeque;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.RedisConnectionException;
@@ -15,22 +16,23 @@ public class DisplayApp {
 
     public static void main(String[] args) throws InterruptedException {
         rw = new RedisWorker();
-        rw.init();
-
-        while (true) {
-            if (rw.getSizeQue() > 0) {
+        try {
+            rw.init();
+            while (true) {
                 Integer user = rw.showAndRotateUser();
                 String log = String.format("- На главной странице показываем пользователя: %d", user);
                 out.println(log);
-                TimeUnit.SECONDS.sleep(SHOW_TIME.toMillis());
+                TimeUnit.SECONDS.sleep(SHOW_TIME.getSeconds());
             }
+        } catch (Exception e) {
+            out.println("Problem " + e.getMessage());
         }
     }
 
     private static class RedisWorker {
         private final static String KEY = "ONLINE_USERS";
         private RedissonClient redisson;
-        private RDeque<Integer> onlineUsers;
+        private RBlockingDeque<Integer> onlineUsers;
 
         private void init() {
             Config config = new Config();
@@ -41,17 +43,13 @@ public class DisplayApp {
                 out.println("Не удалось подключиться к Redis");
                 out.println(Exc.getMessage());
             }
-            onlineUsers = redisson.getDeque(KEY);
+            onlineUsers = redisson.getBlockingDeque(KEY);
         }
 
-        private Integer showAndRotateUser() {
-            Integer user = onlineUsers.poll();
+        private Integer showAndRotateUser() throws InterruptedException {
+            Integer user = onlineUsers.takeFirst();
             onlineUsers.add(user);
             return user;
-        }
-
-        private int getSizeQue() {
-            return onlineUsers.size();
         }
     }
 }

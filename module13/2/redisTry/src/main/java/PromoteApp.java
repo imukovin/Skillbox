@@ -1,4 +1,5 @@
 import org.redisson.Redisson;
+import org.redisson.api.RBlockingDeque;
 import org.redisson.api.RDeque;
 import org.redisson.api.RKeys;
 import org.redisson.api.RedissonClient;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.System.out;
+import static java.lang.System.setOut;
 
 public class PromoteApp {
     private static final Duration PROMOTE_TIME = Duration.ofSeconds(10);
@@ -17,14 +19,17 @@ public class PromoteApp {
 
     public static void main(String[] args) throws InterruptedException {
         rw = new RedisWorker();
-        rw.init();
-        rw.regUsers();
-
-        while (true) {
-            Integer promoteUser = rw.promoteUser();
-            String log = String.format("> Пользователь %d оплатил платную услугу", promoteUser);
-            out.println(log);
-            TimeUnit.SECONDS.sleep(PROMOTE_TIME.toMillis());
+        try {
+            rw.init();
+            rw.regUsers();
+            while (true) {
+                Integer promoteUser = rw.promoteUser();
+                String log = String.format("> Пользователь %d оплатил платную услугу", promoteUser);
+                out.println(log);
+                TimeUnit.SECONDS.sleep(PROMOTE_TIME.getSeconds());
+            }
+        } catch (Exception e) {
+            out.println("Problem " + e.getMessage());
         }
     }
 
@@ -32,7 +37,7 @@ public class PromoteApp {
         private final static String KEY = "ONLINE_USERS";
         public static final int USERS_COUNT = 20;
         private RedissonClient redisson;
-        private RDeque<Integer> onlineUsers;
+        private RBlockingDeque<Integer> onlineUsers;
 
         private void init() {
             Config config = new Config();
@@ -43,9 +48,7 @@ public class PromoteApp {
                 out.println("Не удалось подключиться к Redis");
                 out.println(Exc.getMessage());
             }
-            RKeys rKeys = redisson.getKeys();
-            onlineUsers = redisson.getDeque(KEY);
-            rKeys.delete(KEY);
+            onlineUsers = redisson.getBlockingDeque(KEY);
         }
 
         private void regUsers() {
@@ -54,10 +57,10 @@ public class PromoteApp {
             }
         }
 
-        private Integer promoteUser() {
+        private Integer promoteUser() throws InterruptedException {
             int promoteUser = (int) (Math.random() * USERS_COUNT);
             onlineUsers.remove(promoteUser);
-            onlineUsers.addFirst(promoteUser);
+            onlineUsers.putFirst(promoteUser);
             return promoteUser;
         }
 
