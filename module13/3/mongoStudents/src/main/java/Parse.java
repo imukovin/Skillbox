@@ -1,4 +1,5 @@
 import au.com.bytecode.opencsv.CSVReader;
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -10,8 +11,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 public class Parse {
     private static final String CSV_FILE_NAME = "mongo.csv";
@@ -48,39 +47,44 @@ public class Parse {
                     .append("courses", courses);
             sendToMongoServer(firstDocument);
         }
+        reader.close();
     }
 
     private void sendToMongoServer(Document firstDocument) {
         collection.insertOne(firstDocument);
     }
 
-    public int getStudentsCount() {
-        AtomicInteger count = new AtomicInteger();
+    public long getStudentsCount() {
         BsonDocument query = BsonDocument.parse("{}");
-        collection.find(query).forEach((Consumer<Document>) document -> {
-            count.getAndIncrement();
-        });
-        return count.get();
+        return collection.countDocuments(query);
     }
 
-    public int getStudentsAgeMoreFourteen() {
-        AtomicInteger count = new AtomicInteger();
-        BsonDocument query = BsonDocument.parse("{\"age\" : {$gt : 40}}");
-        collection.find(query).forEach((Consumer<Document>) document -> {
-            count.getAndIncrement();
-        });
-        return count.get();
+    public long getStudentsAgeMoreFourteen() {
+        BasicDBObject query = new BasicDBObject("age", new BasicDBObject("$gt", 40));
+        return collection.countDocuments(query);
     }
 
-    public void getNameOfYoung() {
-        collection.find(BsonDocument.parse("{}"))
-                .sort(BsonDocument.parse("{\"age\":1}"))
-                .forEach((Consumer<Document>) document -> {
-                System.out.println(document.get("name") + " (" + document.get("age") + ")");
-        });
+    public String getNameOfYoung() {
+        BasicDBObject query = new BasicDBObject("age", 1);
+        Document document = collection.find().sort(query).limit(1).first();
+        int minAge = (int) document.get("age");
+        query = new BasicDBObject("age", new BasicDBObject("$eq", minAge));
+        StringBuilder students = new StringBuilder();
+        for (Document doc : collection.find(query)) {
+            students.append(doc.get("name")).append(", ");
+        }
+        return students.toString();
     }
 
-    public void getCoursesOfOldStudent() {
-        
+    public String getCoursesOfOldStudent() {
+        BasicDBObject query = new BasicDBObject("age", -1);
+        Document document = collection.find().sort(query).limit(1).first();
+        int maxAge = (int) document.get("age");
+        query = new BasicDBObject("age", new BasicDBObject("$eq", maxAge));
+        StringBuilder students = new StringBuilder();
+        for (Document doc : collection.find(query)) {
+            students.append(doc.get("name")).append(" ").append(doc.get("courses")).append(", ");
+        }
+        return students.toString();
     }
 }
