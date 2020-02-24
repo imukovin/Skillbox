@@ -79,4 +79,8 @@ public class Parse {
                 System.out.println(document.get("name") + " (" + document.get("age") + ")");
         });
     }
+
+    public void getCoursesOfOldStudent() {
+        
+    }
 }
