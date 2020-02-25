@@ -64,14 +64,19 @@ public class Parse {
         return collection.countDocuments(query);
     }
 
-    public String getNamesYoungOrCoursesOfOldStudents(int sortType) {
-        BasicDBObject query = new BasicDBObject("age", sortType);
+    public String getNamesYoungOrCoursesOfOldStudents(SortType sortType) {
+        BasicDBObject query;
+        if (sortType == SortType.ASC) {
+            query = new BasicDBObject("age", 1);
+        } else {
+            query = new BasicDBObject("age", -1);
+        }
         Document document = collection.find().sort(query).limit(1).first();
         int age = (int) document.get("age");
         query = new BasicDBObject("age", new BasicDBObject("$eq", age));
         StringBuilder students = new StringBuilder();
         for (Document doc : collection.find(query)) {
-            if (sortType == 1) {
+            if (sortType == SortType.ASC) {
                 students
                         .append(doc.get("name"))
                         .append(", ");
