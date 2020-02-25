@@ -34,20 +34,20 @@ public class Parse {
     private void parseCsvFileAndAddToMongo() throws IOException {
         ClassLoader classLoader = Loader.class.getClassLoader();
         File file = new File(classLoader.getResource(CSV_FILE_NAME).getFile());
-        CSVReader reader = new CSVReader(new FileReader(file), ',' , '"' , 0);
 
         String[] nextLine;
         Document firstDocument;
-        while ((nextLine = reader.readNext()) != null) {
-            ArrayList<String> courses = new ArrayList<>();
-            Collections.addAll(courses, nextLine[2].split(","));
-            firstDocument = new Document()
-                    .append("name", nextLine[0])
-                    .append("age", Integer.parseInt(nextLine[1]))
-                    .append("courses", courses);
-            sendToMongoServer(firstDocument);
+        try (CSVReader reader = new CSVReader(new FileReader(file), ',' , '"' , 0)) {
+            while ((nextLine = reader.readNext()) != null) {
+                ArrayList<String> courses = new ArrayList<>();
+                Collections.addAll(courses, nextLine[2].split(","));
+                firstDocument = new Document()
+                        .append("name", nextLine[0])
+                        .append("age", Integer.parseInt(nextLine[1]))
+                        .append("courses", courses);
+                sendToMongoServer(firstDocument);
+            }
         }
-        reader.close();
     }
 
     private void sendToMongoServer(Document firstDocument) {
@@ -64,26 +64,24 @@ public class Parse {
         return collection.countDocuments(query);
     }
 
-    public String getNameOfYoung() {
-        BasicDBObject query = new BasicDBObject("age", 1);
+    public String getNamesYoungOrCoursesOfOldStudents(int sortType) {
+        BasicDBObject query = new BasicDBObject("age", sortType);
         Document document = collection.find().sort(query).limit(1).first();
-        int minAge = (int) document.get("age");
-        query = new BasicDBObject("age", new BasicDBObject("$eq", minAge));
+        int age = (int) document.get("age");
+        query = new BasicDBObject("age", new BasicDBObject("$eq", age));
         StringBuilder students = new StringBuilder();
         for (Document doc : collection.find(query)) {
-            students.append(doc.get("name")).append(", ");
-        }
-        return students.toString();
-    }
-
-    public String getCoursesOfOldStudent() {
-        BasicDBObject query = new BasicDBObject("age", -1);
-        Document document = collection.find().sort(query).limit(1).first();
-        int maxAge = (int) document.get("age");
-        query = new BasicDBObject("age", new BasicDBObject("$eq", maxAge));
-        StringBuilder students = new StringBuilder();
-        for (Document doc : collection.find(query)) {
-            students.append(doc.get("name")).append(" ").append(doc.get("courses")).append(", ");
+            if (sortType == 1) {
+                students
+                        .append(doc.get("name"))
+                        .append(", ");
+            } else {
+                students
+                        .append(doc.get("name"))
+                        .append(" ")
+                        .append(doc.get("courses"))
+                        .append(", ");
+            }
         }
         return students.toString();
     }
