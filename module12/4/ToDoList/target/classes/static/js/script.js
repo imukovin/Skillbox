@@ -1,11 +1,11 @@
 $(function(){
     //add task
     $('#add-task').click(function(){
-        var data1 = $('#list-form form').serialize();
+        var data = $('#list-form form').serialize();
         $.ajax({
             method: "POST",
             url: "/addtask",
-            data: data1,
+            data: data,
             statusCode:{
                 510:function(){
                     alert('Запиь не добавлена!');

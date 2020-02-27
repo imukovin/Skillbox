@@ -1,22 +1,15 @@
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
-import com.mongodb.client.AggregateIterable;
+import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import org.bson.BsonArray;
-import org.bson.BsonDocument;
-import org.bson.BsonObjectId;
 import org.bson.Document;
 
-import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class Loader {
-    private static final int PRICE_LATTER_THAN = 100;
+    private static final int PRICE_LESS_THAN = 100;
 
     private static MongoCollection<Document> collection;
     private static MongoDatabase database;
@@ -71,14 +64,7 @@ public class Loader {
                     }
                     break;
                 case "staff_stat":
-                    System.out.println();
-                    staffAmountToShops();
-                    System.out.println();
-                    avgValueForEachShop();
-                    System.out.println();
-                    minAndMaxPricePerStaff();
-                    System.out.println();
-                    countOfStaffLaterThan100();
+                    shopsStats();
                     break;
                 default:
                     System.out.println("--------> Неверно указана команда!");
@@ -87,98 +73,55 @@ public class Loader {
         }
     }
 
-    private static void staffAmountToShops() {
-        //> db.shops.aggregate([{$match:{name:"Восьмерочка"}}, {$project:{"staffList1":{$s
-        //ize:"$staffList"}}}, {$group:{"_id":null, "count":{$sum:"$staffList1"}}}])
-        //{ "_id" : null, "count" : 4 }
-        System.out.println(">>>>> Общее кол-во товара в каждом магазине: ");
+    private static void shopsStats() {
         collection = database.getCollection("shops");
-        for (Document doc : collection.find()) {
-            AggregateIterable<Document> output = collection.aggregate(Arrays.asList(
-                    new Document("$match", new Document("name", doc.get("name"))),
-                    new Document("$project", new Document("staffList1", new Document("$size", "$staffList"))),
-                    new Document("$group", new Document("_id", doc.get("name"))
-                            .append("count", new Document("$sum", "$staffList1")))));
-            for (Document d : output)
-            {
-                System.out.println("\t\t" + d.get("_id") + ": " + d.get("count"));
+        List<Document> aggregations = new ArrayList<>();
+        aggregations.add(
+                new Document("$lookup",
+                        new Document()
+                                .append("localField", "staffList")
+                                .append("foreignField", "name")
+                                .append("from", "staff")
+                                .append("as", "goodsRef")
+                )
+        );
+        aggregations.add(
+                new Document("$unwind", new Document("path", "$goodsRef"))
+        );
+        aggregations.add(
+                new Document("$addFields",
+                        new Document("priceIsLessThan100",
+                                new Document("$cond", new Document("if",
+                                        new Document("$lt", Arrays.asList("$goodsRef.price", PRICE_LESS_THAN)))
+                                                .append("then", 1)
+                                                .append("else", 0))))
+        );
+        aggregations.add(
+                new Document("$group",
+                        new Document()
+                                .append("_id", "$name")
+                                .append("avg", new Document("$avg", "$goodsRef.price"))
+                                .append("min", new Document("$min", "$goodsRef.price"))
+                                .append("max", new Document("$max", "$goodsRef.price"))
+                                .append("count", new Document("$sum", 1))
+                                .append("countWherePriceIsLessThan100", new Document("$sum", "$priceIsLessThan100"))
+                )
+        );
+
+        try {
+            for(Document doc : collection.aggregate(aggregations)) {
+                System.out.println("--------> " + doc.getString("_id")
+                        + "\nСредняя цена: " + doc.getDouble("avg")
+                        + "\nМин цена: " + doc.getInteger("min")
+                        + "\nМакс цена: " + doc.getInteger("max")
+                        + "\nОбщее число товара: " + doc.getInteger("count")
+                        + "\nКоличество товара, стоимость < 100: " + doc.getInteger("countWherePriceIsLessThan100")
+                );
             }
         }
-    }
-
-    private static void avgValueForEachShop() {
-        //> db.shops.aggregate([{$match:{name:"Девяточка"}}, {$lookup: {from:"staff", loca
-        //    lField: "staffList", foreignField:"name", as: "prices"}}, {$unwind: "$prices"},
-        //{$project:{"price": "$prices.price"}}, {$group:{_id:0, avgP:{$avg:"$price"}}}]).
-        //pretty()
-        System.out.println(">>>>> Среднее значение цены в каждом магазине: ");
-        collection = database.getCollection("shops");
-        for (Document doc : collection.find()) {
-            AggregateIterable<Document> output = collection.aggregate(Arrays.asList(
-                    new Document("$match", new Document("name", doc.get("name"))),
-                    new Document("$lookup", new Document("from", "staff")
-                            .append("localField", "staffList")
-                            .append("foreignField", "name")
-                            .append("as", "prices")),
-                    new Document("$unwind", "$prices"),
-                    new Document("$project", new Document("price", "$prices.price")),
-                    new Document("$group", new Document("_id", doc.get("name"))
-                            .append("avgP", new Document("$avg", "$price")))));
-            for (Document d : output)
-            {
-                System.out.println("\t\t" + d.get("_id") + ": " + d.get("avgP"));
-            }
-        }
-    }
-
-    private static void minAndMaxPricePerStaff() {
-        //> db.shops.aggregate([{$match:{name:"Девяточка"}}, {$lookup: {from:"staff", loca
-         //   lField: "staffList", foreignField:"name", as: "prices"}}, {$unwind: "$prices"},
-        //{$project:{"price": "$prices.price"}}, {$group:{_id:0, min:{$min:"$price"}, max:
-        //{$max:"$price"}}}]).pretty()
-        System.out.println(">>>>> Мин/макс значение цены в каждом магазине: ");
-        collection = database.getCollection("shops");
-        for (Document doc : collection.find()) {
-            AggregateIterable<Document> output = collection.aggregate(Arrays.asList(
-                    new Document("$match", new Document("name", doc.get("name"))),
-                    new Document("$lookup", new Document("from", "staff")
-                            .append("localField", "staffList")
-                            .append("foreignField", "name")
-                            .append("as", "prices")),
-                    new Document("$unwind", "$prices"),
-                    new Document("$project", new Document("price", "$prices.price")),
-                    new Document("$group", new Document("_id", doc.get("name"))
-                            .append("min", new Document("$min","$price"))
-                            .append("max", new Document("$max", "$price")))));
-            for (Document d : output)
-            {
-                System.out.println("\t\t" + d.get("_id") + ": min " + d.get("min") + "  max " + d.get("max"));
-            }
-        }
-    }
-
-    private static void countOfStaffLaterThan100() {
-        //> db.shops.aggregate([{$match:{name:"Девяточка"}}, {$lookup: {from:"staff", loca
-        //    lField: "staffList", foreignField:"name", as: "prices"}}, {$unwind: "$prices"},
-        //{$project:{"price": "$prices.price"}}, {$match:{price:{$lt:100}}}, {$count:"coun
-        //    t"}]).pretty()
-        System.out.println(">>>>> Кол-во товара меньше 100 руб: ");
-        collection = database.getCollection("shops");
-        for (Document doc : collection.find()) {
-            AggregateIterable<Document> output = collection.aggregate(Arrays.asList(
-                    new Document("$match", new Document("name", doc.get("name"))),
-                    new Document("$lookup", new Document("from", "staff")
-                            .append("localField", "staffList")
-                            .append("foreignField", "name")
-                            .append("as", "prices")),
-                    new Document("$unwind", "$prices"),
-                    new Document("$project", new Document("price", "$prices.price")),
-                    new Document("$match", new Document("price", new Document("$lt", PRICE_LATTER_THAN))),
-                    new Document("$count", "count")));
-            for (Document d : output)
-            {
-                System.out.println("\t\t" + doc.get("name") + ": " + d.get("count"));
-            }
+        catch(MongoException exception) {
+            System.out.println("Не удалось получить статистику");
+            exception.printStackTrace();
         }
     }
 }
