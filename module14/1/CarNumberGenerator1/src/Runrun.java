@@ -1,6 +1,4 @@
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 public class Runrun implements Runnable {
     public static final int NUM_OF_NUMBERS = 1000;
@@ -14,7 +12,8 @@ public class Runrun implements Runnable {
 
     @Override
     public void run() {
-        try (FileOutputStream writer = new FileOutputStream(fileName)) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(fileName)) {
+            PrintWriter printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(fileOutputStream)));
             char letters[] = {'У', 'К', 'Е', 'Н', 'Х', 'В', 'А', 'Р', 'О', 'С', 'М', 'Т'};
             StringBuilder sb;
             for (int number = 1; number < NUM_OF_NUMBERS; number++) {
@@ -31,9 +30,9 @@ public class Runrun implements Runnable {
                         }
                     }
                 }
-                writer.write(sb.toString().getBytes());
+                printWriter.write(sb.toString());
             }
-            writer.flush();
+            fileOutputStream.getChannel().force(true);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
