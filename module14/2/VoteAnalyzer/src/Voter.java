@@ -22,11 +22,10 @@ public class Voter
     @Override
     public int hashCode()
     {
-        long code = name.hashCode() + birthDay.hashCode();
-        while(code > Integer.MAX_VALUE) {
-            code = code/10;
-        }
-        return (int) code;
+        int hash = 1;
+        hash = hash * 31 + name.hashCode();
+        hash = hash * 31 + (birthDay == null ? 0 : birthDay.hashCode());
+        return hash;
     }
 
     public String toString()

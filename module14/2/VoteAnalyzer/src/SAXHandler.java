@@ -21,8 +21,7 @@ public class SAXHandler extends DefaultHandler {
                 voter = new Voter(attributes.getValue("name"),
                         birthDayFormat.parse(attributes.getValue("birthDay")));
             } else if (qName.equals("visit") && voter != null) {
-                int count = voterCounts.getOrDefault(voter, 0);
-                voterCounts.put(voter, count + 1);
+                voterCounts.merge(voter, +1, Integer::sum);
             }
         } catch (Exception e) {
             e.printStackTrace();
