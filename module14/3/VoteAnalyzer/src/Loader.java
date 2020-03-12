@@ -6,6 +6,9 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 public class Loader
 {
     public static void main(String[] args) throws Exception
@@ -30,15 +33,22 @@ public class Loader
     {
         NodeList voters = doc.getElementsByTagName("voter");
         int votersCount = voters.getLength();
-        for(int i = 0; i < votersCount; i++)
-        {
-            Node node = voters.item(i);
-            NamedNodeMap attributes = node.getAttributes();
-            String name = attributes.getNamedItem("name").getNodeValue();
-            String birthDay = attributes.getNamedItem("birthDay").getNodeValue();
+        try (PreparedStatement ps = DBConnection.getConnection().prepareStatement("INSERT INTO voter_count (name, birthDate) VALUES (?, ?)")) {
+            for(int i = 0; i < votersCount; i++) {
+                Node node = voters.item(i);
+                NamedNodeMap attributes = node.getAttributes();
+                String name = attributes.getNamedItem("name").getNodeValue();
+                String birthDay = attributes.getNamedItem("birthDay").getNodeValue();
 
-            DBConnection.countVoter(name, birthDay);
+                birthDay = birthDay.replace('.', '-');
+                ps.setString(1, name);
+                ps.setString(2, birthDay);
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        DBConnection.executeMultiInsert();
+        DBConnection.addIndex();
     }
 }

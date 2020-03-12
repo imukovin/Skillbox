@@ -8,8 +8,6 @@ public class DBConnection
     private static String dbUser = "root";
     private static String dbPass = "root";
 
-    private static StringBuilder insertQuery = new StringBuilder();
-
     public static Connection getConnection()
     {
         if(connection == null)
@@ -17,15 +15,15 @@ public class DBConnection
             try {
                 connection = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/" + dbName +
-                    "?user=" + dbUser + "&password=" + dbPass + "&useSSL=false&serverTimezone=GMT");
+                    "?user=" + dbUser + "&password=" + dbPass + "&useSSL=false" +
+                            "&serverTimezone=GMT" +
+                            "&rewriteBatchedStatements=true");
                 connection.createStatement().execute("DROP TABLE IF EXISTS voter_count");
                 connection.createStatement().execute("CREATE TABLE voter_count(" +
                         "id INT NOT NULL AUTO_INCREMENT, " +
                         "name TINYTEXT NOT NULL, " +
                         "birthDate DATE NOT NULL, " +
-                        "`count` INT NOT NULL, " +
-                        "PRIMARY KEY(id), " +
-                        "UNIQUE KEY name_date(name(50), birthDate))");
+                        "PRIMARY KEY(id))");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -33,31 +31,22 @@ public class DBConnection
         return connection;
     }
 
-    public static void executeMultiInsert() throws SQLException {
-        String query = "INSERT INTO voter_count (name, birthDate, `count`) VALUES " +
-                insertQuery.toString() + " ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+    public static void addIndex() throws SQLException {
+        String query = "CREATE INDEX name_date ON voter_count (name(50), birthDate)";
         DBConnection.getConnection().createStatement().execute(query);
-    }
 
-    public static void countVoter(String name, String birthDay)
-    {
-        birthDay = birthDay.replace('.', '-');
-        insertQuery.append(insertQuery.length() == 0 ? "" : ", ")
-                .append("('")
-                .append(name)
-                .append("', '")
-                .append(birthDay)
-                .append("', 1)");
     }
 
     public static void printVoterCounts() throws SQLException
     {
-        String sql = "SELECT name, birthDate, `count` FROM voter_count WHERE `count` > 1";
+        String sql = "SELECT name, birthDate, COUNT(*) as `count` FROM voter_count " +
+                "GROUP BY name, birthDate HAVING `count` > 1";
         ResultSet rs = DBConnection.getConnection().createStatement().executeQuery(sql);
         while(rs.next())
         {
-            System.out.println("\t" + rs.getString("name") + " (" +
-                    rs.getString("birthDate") + ") - " + rs.getInt("count"));
+            System.out.println("\t" + rs.getString("name") +
+                    " (" + rs.getString("birthDate") + ") - " +
+                    rs.getInt("count"));
         }
     }
 }
