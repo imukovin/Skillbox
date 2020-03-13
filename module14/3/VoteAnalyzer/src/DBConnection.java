@@ -31,6 +31,11 @@ public class DBConnection
         return connection;
     }
 
+    public static void multiQuery(StringBuilder query) throws SQLException {
+        String query1 = "INSERT INTO voter_count(name, birthDate) VALUES ";
+        DBConnection.getConnection().createStatement().execute(query1 + query);
+    }
+
     public static void addIndex() throws SQLException {
         String query = "CREATE INDEX name_date ON voter_count (name(50), birthDate)";
         DBConnection.getConnection().createStatement().execute(query);
@@ -48,5 +53,10 @@ public class DBConnection
                     " (" + rs.getString("birthDate") + ") - " +
                     rs.getInt("count"));
         }
+    }
+
+    public static void closeConnection() throws SQLException {
+        connection.close();
+        connection = null;
     }
 }
