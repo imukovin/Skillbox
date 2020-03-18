@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileAccess {
+public class FileAccess implements AutoCloseable {
     private static final String HADOOP_USER_NAME = "Aleksey";
 
     private FileSystem hdfs = null;
@@ -56,12 +56,17 @@ public class FileAccess {
      * @param content
      */
     public void append(String path, String content) throws IOException {
+        hdfs.setReplication(new Path(path), (short) 1);
         if (hdfs.isFile(new Path(path))) {
-            FSDataOutputStream fsDataOutputStream = hdfs.append(new Path(path), content.getBytes().length);
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(fsDataOutputStream, StandardCharsets.UTF_8));
-            bufferedWriter.write(content);
-            bufferedWriter.flush();
-            bufferedWriter.close();
+            try (FSDataOutputStream fsDataOutputStream = hdfs.append(new Path(path), content.getBytes().length);
+                 BufferedWriter bufferedWriter =
+                         new BufferedWriter(new OutputStreamWriter(fsDataOutputStream, StandardCharsets.UTF_8))) {
+                bufferedWriter.write(content);
+                bufferedWriter.flush();
+                hdfs.setReplication(new Path(path), (short) 3);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             System.out.println("Попытка дозаписи к директории!!!");
         }
@@ -74,8 +79,11 @@ public class FileAccess {
      * @return
      */
     public String read(String path) throws IOException {
-        FSDataInputStream inputStream = hdfs.open(new Path(path));
-        return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+        String text = "";
+        try (FSDataInputStream inputStream = hdfs.open(new Path(path))) {
+            text = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+        }
+        return text;
     }
 
     /**
@@ -112,7 +120,8 @@ public class FileAccess {
         return files;
     }
 
-    public void close() throws IOException {
+    @Override
+    public void close() throws Exception {
         hdfs.close();
     }
 }
