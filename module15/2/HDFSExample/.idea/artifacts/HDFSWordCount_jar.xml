@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="HDFSWordCount:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/HDFSWordCount_jar</output-path>
+    <root id="archive" name="HDFSWordCount.jar">
+      <element id="module-output" name="HDFSWordCount" />
+    </root>
+  </artifact>
+</component>
