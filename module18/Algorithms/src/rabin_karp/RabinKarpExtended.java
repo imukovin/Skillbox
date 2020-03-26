@@ -4,6 +4,8 @@ import java.util.*;
 
 public class RabinKarpExtended
 {
+    public static final int NUM_OF_ALPHABET = 10;
+
     private String text, query;
     private HashMap<Character, Integer> alphabet;
     private StringBuilder numberText;
@@ -20,7 +22,7 @@ public class RabinKarpExtended
 
     public Integer search()
     {
-        if (alphabet.size() > 10) {
+        if (alphabet.size() > NUM_OF_ALPHABET) {
             return null;
         }
         int posQuery = 0;
