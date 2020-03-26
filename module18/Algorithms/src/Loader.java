@@ -2,6 +2,7 @@ import array_max_value.ArrayMaxValue;
 import binary_search.BinarySearch;
 import merge_sort.MergeSort;
 import quick_sort.QuickSort;
+import rabin_karp.RabinKarpExtended;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -24,7 +25,13 @@ public class Loader {
         MergeSort.mergeSort(a);
         System.out.println("MergeSort: " + Arrays.toString(a));
 
-
+        RabinKarpExtended rke = new RabinKarpExtended("Hello World World is World", "World");
+        Integer position = rke.search();
+        if (position == null) {
+            System.out.println("Рабин-Карп: Алфавит содержит > 10 символов!");
+        } else {
+            System.out.println("Рабин-Карп: " + position);
+        }
     }
 
     private static ArrayList<String> getList() {
