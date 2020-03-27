@@ -7,6 +7,7 @@ import rabin_karp.RabinKarpExtended;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Loader {
     public static void main(String[] args) {
@@ -17,7 +18,7 @@ public class Loader {
         int pos = new BinarySearch(arr).search("Ale");
         System.out.println("BinarySearchRes: " + pos);
 
-        int[] a = new int[]{5, 7, 1, 2, 3, 8, 0, 10};
+        int[] a = new int[]{0, 7, 7, 5, 7, 7};
         QuickSort.sort(a);
         System.out.println("QuickSort: " + Arrays.toString(a));
 
@@ -25,12 +26,12 @@ public class Loader {
         MergeSort.mergeSort(a);
         System.out.println("MergeSort: " + Arrays.toString(a));
 
-        RabinKarpExtended rke = new RabinKarpExtended("Hello World World is World", "World");
-        Integer position = rke.search();
-        if (position == null) {
-            System.out.println("Рабин-Карп: Алфавит содержит > 10 символов!");
+        RabinKarpExtended rke = new RabinKarpExtended("Hello World World is World", "o ");
+        List<Integer> indices = rke.search();
+        if (indices == null) {
+            System.out.println("Рабин-Карп: Алфавит > 10 символов или подстрока не найдена!");
         } else {
-            System.out.println("Рабин-Карп: " + position);
+            System.out.println("Рабин-Карп: " + indices.toString());
         }
     }
 

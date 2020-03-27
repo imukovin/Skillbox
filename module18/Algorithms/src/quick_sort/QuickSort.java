@@ -1,5 +1,7 @@
 package quick_sort;
 
+import java.util.Arrays;
+
 public class QuickSort
 {
     public static void sort(int[] array)
@@ -30,9 +32,13 @@ public class QuickSort
             while (array[to] > pivot) {
                 to--;
             }
-            int temp = array[from];
-            array[from] = array[to];
-            array[to] = temp;
+            if (array[from] != array[to]) {
+                int temp = array[from];
+                array[from] = array[to];
+                array[to] = temp;
+            } else {
+                to--;
+            }
         }
         return from;
     }
