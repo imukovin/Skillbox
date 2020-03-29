@@ -4,53 +4,72 @@ import java.util.*;
 
 public class RabinKarpExtended
 {
-    public static final int NUM_OF_ALPHABET = 10;
+    public static final int NUM_OF_ALPHABET = 256;
+    public static final int SIMPLE_NUM = 101;
 
     private String text;
     private String query;
-    private String numberQuery;
-    private String numberText;
-    private boolean isAlphabetCorrect;
-    private TreeMap<String, List<Integer>> number2position;
+    private int m, n, p, t, h;
+    private TreeMap<Integer, List<Integer>> number2position;
 
-    public RabinKarpExtended(String text, String query)
+    public RabinKarpExtended(String text)
     {
         this.text = text;
-        this.query = query;
-        this.numberQuery = "";
-        this.numberText = "";
-        this.isAlphabetCorrect = true;
+        n = text.length();
         number2position = new TreeMap<>();
-        createIndex();
+        //createIndex();
+    }
+
+    public void create(String query) {
+        this.query = query;
+        p = 0;
+        t = 0;
+        h = 1;
+        m = query.length();
+
+        for (int i = 0; i < m - 1; i++) {
+            h = (h * NUM_OF_ALPHABET) % SIMPLE_NUM;
+        }
+
+        for (int i = 0; i < m; i++) {
+            p = (NUM_OF_ALPHABET * p + query.charAt(i)) % SIMPLE_NUM;
+            t = (NUM_OF_ALPHABET * t + text.charAt(i)) % SIMPLE_NUM;
+        }
     }
 
     public List<Integer> search()
     {
-        if (!isAlphabetCorrect) {
-            return null;
-        }
-        int numOfSymbols = 1;
-        while (numOfSymbols < numberText.length()) {
-            int i = 0;
-            while (i + numOfSymbols <= numberText.length()) {
-                //if ((i + 1) * numOfSymbols <= numberText.length()) {
-                    if (number2position.containsKey(numberText.substring(i, i + numOfSymbols))) {
-                        number2position.get(numberText.substring(i, i + numOfSymbols))
-                                .add(i);
-                    } else {
-                        ArrayList<Integer> l = new ArrayList<>();
-                        l.add(i);
-                        number2position.put(numberText.substring(i, i + numOfSymbols), l);
+        if (number2position.get(p) == null) {
+            for (int i = 0; i <= n - m; i++) {
+                if (p == t) {
+                    int j = 0;
+                    for (j = 0; j < m; j++) {
+                        if (text.charAt(i + j) != query.charAt(j)) {
+                            break;
+                        }
                     }
-                //}
-                i++;
+                    if (j == m) {
+                        if (!number2position.containsKey(p)) {
+                            ArrayList<Integer> l = new ArrayList<>();
+                            l.add(i);
+                            number2position.put(p, l);
+                        } else {
+                            number2position.get(p).add(i);
+                        }
+                    }
+                }
+                if (i < n - m) {
+                    t = (NUM_OF_ALPHABET * (t - text.charAt(i) * h) + text.charAt(i + m)) % SIMPLE_NUM;
+                    if (t < 0) {
+                        t = t + SIMPLE_NUM;
+                    }
+                }
             }
-            numOfSymbols++;
         }
-        return number2position.get(numberQuery);
+        return number2position.get(p);
     }
 
-    private void createIndex()
+    /*private void createIndex()
     {
         HashMap<Character, Integer> alphabet = new HashMap<>();
         for (int i = 0; i < text.length(); i++) {
@@ -67,5 +86,5 @@ public class RabinKarpExtended
             numberQuery = numberQuery + alphabet.get(query.charAt(i));
         }
         //System.out.println(numberText);
-    }
+    }*/
 }

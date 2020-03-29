@@ -26,13 +26,16 @@ public class Loader {
         MergeSort.mergeSort(a);
         System.out.println("MergeSort: " + Arrays.toString(a));
 
-        RabinKarpExtended rke = new RabinKarpExtended("Hello World World is World", "o ");
+        RabinKarpExtended rke = new RabinKarpExtended("Hello World World is World");
+        rke.create("World");
         List<Integer> indices = rke.search();
-        if (indices == null) {
-            System.out.println("Рабин-Карп: Алфавит > 10 символов или подстрока не найдена!");
-        } else {
-            System.out.println("Рабин-Карп: " + indices.toString());
-        }
+        System.out.println("Позиции: " + ((indices == null) ? "Нет такой подстроки!" : indices.toString()));
+        rke.create("aldlcamdlsmclk");
+        indices = rke.search();
+        System.out.println("Позиции: " + ((indices == null) ? "Нет такой подстроки!" : indices.toString()));
+        rke.create("World");
+        indices = rke.search();
+        System.out.println("Позиции: " + ((indices == null) ? "Нет такой подстроки!" : indices.toString()));
     }
 
     private static ArrayList<String> getList() {
