@@ -35,6 +35,8 @@ public class DoubleLinkedList
             tail = tail.getPrev();
             if (tail != null) {
                 tail.setNext(null);
+            } else {
+                head = null;
             }
             item.setPrev(null);
         }
