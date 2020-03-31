@@ -11,15 +11,15 @@ public class Loader {
     public static void main(String[] args) {
         System.out.println("====== SingleList =======");
         SingleLinkedList list = new SingleLinkedList();
-        list.push(new ListItem("Fourth"));
-        list.push(new ListItem("Third"));
-        list.push(new ListItem("Second"));
-        list.push(new ListItem("First"));
+        list.push(new ListItem<String>("Fourth"));
+        //list.push(new ListItem<String>("Third"));
+        //list.push(new ListItem<String>("Second"));
+        //list.push(new ListItem<String>("First"));
         list.print();
-        list.removeLast();
+        list.pop();
         list.print();
 
-        System.out.println("====== DoubleList =======");
+        /*System.out.println("====== DoubleList =======");
         DoubleLinkedList doubleList = new DoubleLinkedList();
         doubleList.addToTail(new double_linked_list.ListItem("Fifth"));
         doubleList.addToHead(new double_linked_list.ListItem("Fourth"));
@@ -49,6 +49,6 @@ public class Loader {
         System.out.print("Find elements: ");
         for (Node n : list1) {
             System.out.print(n.getData() + " ");
-        }
+        }*/
     }
 }

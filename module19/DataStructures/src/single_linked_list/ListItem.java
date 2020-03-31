@@ -1,16 +1,16 @@
 package single_linked_list;
 
-public class ListItem
+public class ListItem<T>
 {
-    private String data;
+    private T data;
     private ListItem next;
 
-    public ListItem(String data)
+    public ListItem(T data)
     {
         this.data = data;
     }
 
-    public String getData()
+    public T getData()
     {
         return data;
     }
