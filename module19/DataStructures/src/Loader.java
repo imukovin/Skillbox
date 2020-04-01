@@ -3,6 +3,7 @@ import binary_tree.Node;
 import double_linked_list.DoubleLinkedList;
 import single_linked_list.ListItem;
 import single_linked_list.SingleLinkedList;
+import suffix_tree.SuffixTree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,5 +51,15 @@ public class Loader {
         for (Node n : list1) {
             System.out.print(n.getData() + " ");
         }*/
+
+        System.out.println("====== SuffixTree =======");
+        SuffixTree sf = new SuffixTree("World is fine");
+        sf.print();
+        int pos = sf.search("ld");
+        if (pos == -1) {
+            System.out.println("Строка не найдена!");
+        } else {
+            System.out.println(pos);
+        }
     }
 }
