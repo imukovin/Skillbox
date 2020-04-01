@@ -5,6 +5,11 @@ import java.util.NoSuchElementException;
 public class SingleLinkedList
 {
     private ListItem top;
+    private int size;
+
+    public SingleLinkedList() {
+        size = 0;
+    }
 
     public void push(ListItem item)
     {
@@ -12,6 +17,7 @@ public class SingleLinkedList
             item.setNext(top);
         }
         top = item;
+        size++;
     }
 
     public ListItem pop()
@@ -21,6 +27,7 @@ public class SingleLinkedList
         {
             top = top.getNext();
             item.setNext(null);
+            size--;
         }
         return item;
     }
@@ -29,6 +36,7 @@ public class SingleLinkedList
     {
         if(top != null) {
             top = top.getNext();
+            size--;
         } else {
             throw new NoSuchElementException("No such element!");
         }
@@ -46,6 +54,7 @@ public class SingleLinkedList
             } else {
                 top = null;
             }
+            size--;
         } catch (NullPointerException ex) {
             throw new NoSuchElementException("No such element!");
         }
@@ -65,16 +74,7 @@ public class SingleLinkedList
         }
     }
 
-    @Override
-    public String toString() {
-        ListItem current = top;
-        String s = "";
-        while (current.getNext() != null) {
-            s = s + current.getData() + " " + current.getNext().toString() + " ";
-            current = current.getNext();
-        }
-        //s = s + current.getData() + " " + current.getNext().toString() + " ";
-
-        return s;
+    public int getSize() {
+        return size;
     }
 }

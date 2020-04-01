@@ -8,30 +8,54 @@ import static org.junit.Assert.*;
 import single_linked_list.ListItem;
 import single_linked_list.SingleLinkedList;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-
 public class SingleLinkedListTest {
     private SingleLinkedList listTest;
-    private SingleLinkedList listAnswer;
 
     @Before
     public void initTest() {
         listTest = new SingleLinkedList();
-        listAnswer = new SingleLinkedList();
     }
 
     @After
     public void afterTest() {
         listTest = null;
-        listAnswer = null;
     }
 
     @Test
     public void testPush() {
-        LinkedList<String> expectedList = new LinkedList();
-        expectedList.addFirst("Alex");
-        listTest.push(new ListItem<String>("Alex"));
-        assertEquals(expectedList.toString(), listTest.toString());
+        int expectedSize = 3;
+        listTest.push(new ListItem("All"));
+        listTest.push(new ListItem("Alll"));
+        listTest.push(new ListItem("Allll"));
+        assertEquals(expectedSize, listTest.getSize());
+    }
+
+    @Test
+    public void testPop() {
+        int expectedSize = 1;
+        listTest.push(new ListItem("All"));
+        listTest.push(new ListItem("Alll"));
+        listTest.pop();
+        assertEquals(expectedSize, listTest.getSize());
+    }
+
+    @Test
+    public void testRemoveTop() {
+        int expectedSize = 0;
+        listTest.push(new ListItem("Alll"));
+        listTest.removeTop();
+        assertEquals(expectedSize, listTest.getSize());
+    }
+
+    @Test
+    public void testRemoveLast() {
+        int expectedSize = 2;
+        listTest.push(new ListItem("All"));
+        listTest.push(new ListItem("Alll"));
+        listTest.push(new ListItem("Allll"));
+        listTest.push(new ListItem("Alllll"));
+        listTest.removeLast();
+        listTest.removeLast();
+        assertEquals(expectedSize, listTest.getSize());
     }
 }
