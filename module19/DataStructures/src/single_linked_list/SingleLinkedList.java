@@ -2,16 +2,16 @@ package single_linked_list;
 
 import java.util.NoSuchElementException;
 
-public class SingleLinkedList
+public class SingleLinkedList<T>
 {
-    private ListItem top;
+    private ListItem<T> top;
     private int size;
 
     public SingleLinkedList() {
         size = 0;
     }
 
-    public void push(ListItem item)
+    public void push(ListItem<T> item)
     {
         if(top != null) {
             item.setNext(top);
@@ -20,16 +20,16 @@ public class SingleLinkedList
         size++;
     }
 
-    public ListItem pop()
+    public T pop()
     {
-        ListItem item = top;
+        ListItem<T> item = top;
         if(top != null)
         {
             top = top.getNext();
             item.setNext(null);
             size--;
         }
-        return item;
+        return item.getData();
     }
 
     public void removeTop()
@@ -43,26 +43,25 @@ public class SingleLinkedList
     }
 
     public void removeLast() {
-        ListItem pred = null, current = top;
-        try {
-            while (current.getNext() != null) {
-                pred = current;
-                current = current.getNext();
-            }
-            if (pred != null) {
-                pred.setNext(null);
-            } else {
-                top = null;
-            }
-            size--;
-        } catch (NullPointerException ex) {
+        ListItem<T> pred = null, current = top;
+        if (top == null) {
             throw new NoSuchElementException("No such element!");
         }
+        while (current.getNext() != null) {
+            pred = current;
+            current = current.getNext();
+        }
+        if (pred != null) {
+            pred.setNext(null);
+        } else {
+            top = null;
+        }
+        size--;
     }
 
     public void print() {
         System.out.print("All list: ");
-        ListItem current = top;
+        ListItem<T> current = top;
         if (current == null) {
             System.out.println("Список пуст!");
         } else {

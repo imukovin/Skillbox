@@ -1,6 +1,7 @@
 package test;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -8,12 +9,14 @@ import static org.junit.Assert.*;
 import single_linked_list.ListItem;
 import single_linked_list.SingleLinkedList;
 
+import java.util.NoSuchElementException;
+
 public class SingleLinkedListTest {
-    private SingleLinkedList listTest;
+    private SingleLinkedList<String> listTest;
 
     @Before
     public void initTest() {
-        listTest = new SingleLinkedList();
+        listTest = new SingleLinkedList<>();
     }
 
     @After
@@ -24,38 +27,43 @@ public class SingleLinkedListTest {
     @Test
     public void testPush() {
         int expectedSize = 3;
-        listTest.push(new ListItem("All"));
-        listTest.push(new ListItem("Alll"));
-        listTest.push(new ListItem("Allll"));
+        listTest.push(new ListItem<String>("All"));
+        listTest.push(new ListItem<String>("Alll"));
+        listTest.push(new ListItem<String>("Allll"));
         assertEquals(expectedSize, listTest.getSize());
     }
 
     @Test
     public void testPop() {
         int expectedSize = 1;
-        listTest.push(new ListItem("All"));
-        listTest.push(new ListItem("Alll"));
+        listTest.push(new ListItem<String>("All"));
+        listTest.push(new ListItem<String>("Alll"));
         listTest.pop();
         assertEquals(expectedSize, listTest.getSize());
     }
 
-    @Test
+    @Test(expected = NoSuchElementException.class)
     public void testRemoveTop() {
         int expectedSize = 0;
-        listTest.push(new ListItem("Alll"));
+        listTest.push(new ListItem<String>("Alll"));
         listTest.removeTop();
         assertEquals(expectedSize, listTest.getSize());
+
+        listTest.removeTop();
     }
 
-    @Test
+    @Test(expected = NoSuchElementException.class)
     public void testRemoveLast() {
-        int expectedSize = 2;
-        listTest.push(new ListItem("All"));
-        listTest.push(new ListItem("Alll"));
-        listTest.push(new ListItem("Allll"));
-        listTest.push(new ListItem("Alllll"));
+        listTest = new SingleLinkedList<>();
+        listTest.push(new ListItem<String>("All"));
+        listTest.push(new ListItem<String>("Alll"));
+        listTest.push(new ListItem<String>("Allll"));
+        listTest.push(new ListItem<String>("Alllll"));
+        for (int i = 3; i >= 0; i--) {
+            listTest.removeLast();
+            assertEquals(i, listTest.getSize());
+        }
         listTest.removeLast();
-        listTest.removeLast();
-        assertEquals(expectedSize, listTest.getSize());
+        Assert.fail();
     }
 }

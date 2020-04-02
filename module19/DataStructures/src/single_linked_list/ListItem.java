@@ -3,7 +3,7 @@ package single_linked_list;
 public class ListItem<T>
 {
     private T data;
-    private ListItem next;
+    private ListItem<T> next;
 
     public ListItem(T data)
     {
@@ -15,12 +15,12 @@ public class ListItem<T>
         return data;
     }
 
-    public void setNext(ListItem item)
+    public void setNext(ListItem<T> item)
     {
         next = item;
     }
 
-    public ListItem getNext()
+    public ListItem<T> getNext()
     {
         return next;
     }

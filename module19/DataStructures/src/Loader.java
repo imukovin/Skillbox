@@ -11,13 +11,13 @@ import java.util.List;
 public class Loader {
     public static void main(String[] args) {
         System.out.println("====== SingleList =======");
-        SingleLinkedList list = new SingleLinkedList();
+        SingleLinkedList<String> list = new SingleLinkedList<>();
         list.push(new ListItem<String>("Fourth"));
-        //list.push(new ListItem<String>("Third"));
-        //list.push(new ListItem<String>("Second"));
-        //list.push(new ListItem<String>("First"));
+        list.push(new ListItem<String>("Third"));
+        list.push(new ListItem<String>("Second"));
+        list.push(new ListItem<String>("First"));
         list.print();
-        list.pop();
+        System.out.println(list.pop());
         list.print();
 
         /*System.out.println("====== DoubleList =======");
@@ -52,7 +52,7 @@ public class Loader {
             System.out.print(n.getData() + " ");
         }*/
 
-        System.out.println("====== SuffixTree =======");
+        /*System.out.println("====== SuffixTree =======");
         SuffixTree sf = new SuffixTree("World is fine");
         sf.print();
         int pos = sf.search("ld");
@@ -60,6 +60,6 @@ public class Loader {
             System.out.println("Строка не найдена!");
         } else {
             System.out.println(pos);
-        }
+        }*/
     }
 }
