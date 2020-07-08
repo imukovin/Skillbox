@@ -1,0 +1,42 @@
+{
+  "groups": [
+    {
+      "name": "initial.properties",
+      "type": "main.model.InitialObject",
+      "sourceType": "main.model.InitialObject"
+    }
+  ],
+  "properties": [
+    {
+      "name": "initial.properties.copyright",
+      "type": "java.lang.String",
+      "sourceType": "main.model.InitialObject"
+    },
+    {
+      "name": "initial.properties.copyright-from",
+      "type": "java.lang.String",
+      "sourceType": "main.model.InitialObject"
+    },
+    {
+      "name": "initial.properties.email",
+      "type": "java.lang.String",
+      "sourceType": "main.model.InitialObject"
+    },
+    {
+      "name": "initial.properties.phone",
+      "type": "java.lang.String",
+      "sourceType": "main.model.InitialObject"
+    },
+    {
+      "name": "initial.properties.subtitle",
+      "type": "java.lang.String",
+      "sourceType": "main.model.InitialObject"
+    },
+    {
+      "name": "initial.properties.title",
+      "type": "java.lang.String",
+      "sourceType": "main.model.InitialObject"
+    }
+  ],
+  "hints": []
+}

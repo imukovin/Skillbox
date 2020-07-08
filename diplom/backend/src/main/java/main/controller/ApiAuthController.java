@@ -1,6 +1,5 @@
 package main.controller;
 
-import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +17,7 @@ import java.util.Random;
 public class ApiAuthController {
 
     @GetMapping("/api/auth/captcha")
-    public JSONObject captcha() {
+    public void captcha() {
         Random random = new Random();
         String codeOnImage = "";
         String codeSecret = "";
@@ -43,9 +42,9 @@ public class ApiAuthController {
             e.printStackTrace();
         }
 
-        JSONObject json = new JSONObject();
+        /*JSONObject json = new JSONObject();
         json.put("secret", codeSecret);
         json.put("image", "data:image/png;base64, " + Base64.getEncoder().encodeToString(os.toByteArray()));
-        return json;
+        return json;*/
     }
 }
